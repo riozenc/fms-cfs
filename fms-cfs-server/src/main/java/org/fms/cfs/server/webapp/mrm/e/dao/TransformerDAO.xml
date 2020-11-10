@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.riozenc.cfs.webapp.mrm.e.dao.TransformerDAO">
+	<select id="findByKey" parameterType="TransformerDomain"
+		resultType="TransformerDomain" useCache="true">
+		select
+		ID,TRANSFORMER_ASSETS_ID,TRANSFORMER_NO,DESK_NAME,CAPACITY,TRANSFORMER_GROUP_HP,TRANSFORMER_GROUP_LP,IS_PUB_TYPE,TRANSFORMER_LOSS_TYPE,BUSINESS_PLACE_CODE,RUN_DATE,STAND_TIME,LOSS_TYPE,VOLT_TYPE,CHARGE_MAN,WORK_AREA_NO,SET_FORMAT,AREA_NO,SUPPLY_ROOM,VILLAGE_NO,TRANS_CHANGE,INPUT_NODE_CODE,CAPCITOR_CAPACITY,COS_STD_CODE,CREATE_DATE,REMARK,STATUS
+		from TRANSFORMER_INFO
+		<where>
+			and ID = #{id}
+
+		</where>
+	</select>
+	<select id="findByWhere" parameterType="TransformerDomain"
+		resultType="TransformerDomain" useCache="true">
+		select
+		ID,TRANSFORMER_ASSETS_ID,TRANSFORMER_NO,DESK_NAME,CAPACITY,TRANSFORMER_GROUP_HP,TRANSFORMER_GROUP_LP,IS_PUB_TYPE,TRANSFORMER_LOSS_TYPE,BUSINESS_PLACE_CODE,RUN_DATE,STAND_TIME,LOSS_TYPE,VOLT_TYPE,CHARGE_MAN,WORK_AREA_NO,SET_FORMAT,AREA_NO,SUPPLY_ROOM,VILLAGE_NO,TRANS_CHANGE,INPUT_NODE_CODE,CAPCITOR_CAPACITY,COS_STD_CODE,CREATE_DATE,REMARK,STATUS
+		from TRANSFORMER_INFO
+		<where>
+			<if test="id !=null">
+				and ID = #{id}
+			</if>
+			<if test="transformerAssetsId !=null">
+				and TRANSFORMER_ASSETS_ID = #{transformerAssetsId}
+			</if>
+			<if test="transformerNo !=null">
+				and TRANSFORMER_NO = #{transformerNo}
+			</if>
+			<if test="deskName !=null">
+				and DESK_NAME = #{deskName}
+			</if>
+			<if test="capacity !=null">
+				and CAPACITY = #{capacity}
+			</if>
+			<if test="transformerGroupHp !=null">
+				and TRANSFORMER_GROUP_HP = #{transformerGroupHp}
+			</if>
+			<if test="transformerGroupLp !=null">
+				and TRANSFORMER_GROUP_LP = #{transformerGroupLp}
+			</if>
+			<if test="isPubType !=null">
+				and IS_PUB_TYPE = #{isPubType}
+			</if>
+			<if test="transformerLossType !=null">
+				and TRANSFORMER_LOSS_TYPE = #{transformerLossType}
+			</if>
+			<if test="businessPlaceCode !=null">
+				and BUSINESS_PLACE_CODE = #{businessPlaceCode}
+			</if>
+			<if test="runDate !=null">
+				and RUN_DATE = #{runDate}
+			</if>
+			<if test="standTime !=null">
+				and STAND_TIME = #{standTime}
+			</if>
+			<if test="lossType !=null">
+				and LOSS_TYPE = #{lossType}
+			</if>
+			<if test="voltType !=null">
+				and VOLT_TYPE = #{voltType}
+			</if>
+			<if test="chargeMan !=null">
+				and CHARGE_MAN = #{chargeMan}
+			</if>
+			<if test="workAreaNo !=null">
+				and WORK_AREA_NO = #{workAreaNo}
+			</if>
+			<if test="setFormat !=null">
+				and SET_FORMAT = #{setFormat}
+			</if>
+			<if test="areaNo !=null">
+				and AREA_NO = #{areaNo}
+			</if>
+			<if test="supplyRoom !=null">
+				and SUPPLY_ROOM = #{supplyRoom}
+			</if>
+			<if test="villageNo !=null">
+				and VILLAGE_NO = #{villageNo}
+			</if>
+			<if test="transChange !=null">
+				and TRANS_CHANGE = #{transChange}
+			</if>
+			<if test="inputNodeCode !=null">
+				and INPUT_NODE_CODE = #{inputNodeCode}
+			</if>
+			<if test="capcitorCapacity !=null">
+				and CAPCITOR_CAPACITY = #{capcitorCapacity}
+			</if>
+			<if test="cosStdCode !=null">
+				and COS_STD_CODE = #{cosStdCode}
+			</if>
+			<if test="createDate !=null">
+				and CREATE_DATE = #{createDate}
+			</if>
+			<if test="remark !=null">
+				and REMARK = #{remark}
+			</if>
+			<if test="status !=null">
+				and STATUS = #{status}
+			</if>
+			
+		</where>
+	</select>
+	
+	<select id="findByTranId" parameterType="TransformerDomain"	resultType="TransformerDomain" useCache="true">
+		select * from TRANSFORMER_LINE_REL
+		<where>
+			<if test="id !=null" >
+				and TRANSFORMER_ID = #{id}
+			</if>
+		</where> 
+	
+	</select>
+	
+	<insert id="insert" parameterType="TransformerDomain" useGeneratedKeys="true" keyProperty="id"	flushCache="true">
+		insert into
+		TRANSFORMER_INFO(ID,TRANSFORMER_ASSETS_ID,TRANSFORMER_NO,DESK_NAME,CAPACITY,TRANSFORMER_GROUP_HP,TRANSFORMER_GROUP_LP,IS_PUB_TYPE,TRANSFORMER_LOSS_TYPE,BUSINESS_PLACE_CODE,RUN_DATE,STAND_TIME,LOSS_TYPE,VOLT_TYPE,CHARGE_MAN,WORK_AREA_NO,SET_FORMAT,AREA_NO,SUPPLY_ROOM,VILLAGE_NO,TRANS_CHANGE,INPUT_NODE_CODE,CAPCITOR_CAPACITY,COS_STD_CODE,CREATE_DATE,REMARK,STATUS)
+		values
+		(#{id},#{transformerAssetsId},#{transformerNo},#{deskName},#{capacity},#{transformerGroupHp},#{transformerGroupLp},#{isPubType},#{transformerLossType},#{businessPlaceCode},#{runDate},#{standTime},#{lossType},#{voltType},#{chargeMan},#{workAreaNo},#{setFormat},#{areaNo},#{supplyRoom},#{villageNo},#{transChange},#{inputNodeCode},#{capcitorCapacity},#{cosStdCode},#{createDate},#{remark},#{status})
+	</insert>
+	
+	<insert id="insertLineTransRela" parameterType="TransformerDomain" 	flushCache="true">
+		insert into	TRANSFORMER_LINE_REL
+		(LINE_ID,TRANSFORMER_ID,CREATE_DATE,OPERATOR,STATUS)
+		values
+		(#{lineId},#{id},#{createDate},#{operator},#{status})
+	</insert>
+	
+	<update id="updateLineTransRela" parameterType="TransformerDomain" flushCache="true">
+		update TRANSFORMER_LINE_REL 
+		<set>
+			<if test ="lineId !=null" >
+				LINE_ID = #{lineId}
+			</if>
+		</set>
+		<where>
+			TRANSFORMER_ID = #{TransformerId}
+		</where>
+	</update>
+	
+	<update id="update" parameterType="TransformerDomain"	flushCache="true">
+		update TRANSFORMER_INFO
+		<set>
+			<if test="transformerAssetsId !=null">
+				TRANSFORMER_ASSETS_ID = #{transformerAssetsId},
+			</if>
+			<if test="transformerNo !=null">
+				TRANSFORMER_NO = #{transformerNo},
+			</if>
+			<if test="deskName !=null">
+				DESK_NAME = #{deskName},
+			</if>
+			<if test="capacity !=null">
+				CAPACITY = #{capacity},
+			</if>
+			<if test="transformerGroupHp !=null">
+				TRANSFORMER_GROUP_HP = #{transformerGroupHp},
+			</if>
+			<if test="transformerGroupLp !=null">
+				TRANSFORMER_GROUP_LP = #{transformerGroupLp},
+			</if>
+			<if test="isPubType !=null">
+				IS_PUB_TYPE = #{isPubType},
+			</if>
+			<if test="transformerLossType !=null">
+				TRANSFORMER_LOSS_TYPE = #{transformerLossType},
+			</if>
+			<if test="businessPlaceCode !=null">
+				BUSINESS_PLACE_CODE = #{businessPlaceCode},
+			</if>
+			<if test="runDate !=null">
+				RUN_DATE = #{runDate},
+			</if>
+			<if test="standTime !=null">
+				STAND_TIME = #{standTime},
+			</if>
+			<if test="lossType !=null">
+				LOSS_TYPE = #{lossType},
+			</if>
+			<if test="voltType !=null">
+				VOLT_TYPE = #{voltType},
+			</if>
+			<if test="chargeMan !=null">
+				CHARGE_MAN = #{chargeMan},
+			</if>
+			<if test="workAreaNo !=null">
+				WORK_AREA_NO = #{workAreaNo},
+			</if>
+			<if test="setFormat !=null">
+				SET_FORMAT = #{setFormat},
+			</if>
+			<if test="areaNo !=null">
+				AREA_NO = #{areaNo},
+			</if>
+			<if test="supplyRoom !=null">
+				SUPPLY_ROOM = #{supplyRoom},
+			</if>
+			<if test="villageNo !=null">
+				VILLAGE_NO = #{villageNo},
+			</if>
+			<if test="transChange !=null">
+				TRANS_CHANGE = #{transChange},
+			</if>
+			<if test="inputNodeCode !=null">
+				INPUT_NODE_CODE = #{inputNodeCode},
+			</if>
+			<if test="capcitorCapacity !=null">
+				CAPCITOR_CAPACITY = #{capcitorCapacity},
+			</if>
+			<if test="cosStdCode !=null">
+				COS_STD_CODE = #{cosStdCode},
+			</if>
+			<if test="createDate !=null">
+				CREATE_DATE = #{createDate},
+			</if>
+			<if test="remark !=null">
+				REMARK = #{remark},
+			</if>
+			<if test="status !=null">
+				STATUS = #{status},
+			</if>
+			
+		</set>
+		<where>
+			and ID = #{id}
+
+		</where>
+	</update>
+	
+	<delete id="delete" parameterType="TransformerDomain"
+		flushCache="true">
+		delete from TRANSFORMER_INFO
+		<where>
+			and ID = #{id}
+
+		</where>
+	</delete>
+
+
+	<select id="getTransformerByUser" parameterType="UserDomain"
+		resultType="TransformerDomain" useCache="true">
+		SELECT
+		a.*
+		FROM
+		TRANSFORMER_INFO a
+		LEFT JOIN USER_TRANSFORMER_REL b ON
+		a.ID = b.TRANSFORMER_ID
+		LEFT JOIN USER_INFO c ON b.USER_ID = c.ID
+		<where>
+			<if test="userNo !=null">
+				and c.USER_NO = #{userNo}
+			</if>
+		</where>
+	</select>
+</mapper>

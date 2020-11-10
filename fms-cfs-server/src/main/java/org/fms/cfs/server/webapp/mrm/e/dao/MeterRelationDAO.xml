@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.riozenc.cfs.webapp.mrm.e.dao.MeterRelationDAO">
+	<select id="findByKey" parameterType="MeterRelationDomain"
+		resultType="MeterRelationDomain" useCache="true">
+		select
+		ID,METER_ID,P_METER_ID,METER_RELATION_TYPE,METER_RELATION_VALUE,CREATE_DATE,REMARK,STATUS
+		from METER_REL
+		<where>
+			and ID = #{id}
+
+		</where>
+	</select>
+	<select id="findByWhere" parameterType="MeterRelationDomain"
+		resultType="MeterRelationDomain" useCache="true">
+		select
+		ID,METER_ID,P_METER_ID,METER_RELATION_TYPE,METER_RELATION_VALUE,CREATE_DATE,REMARK,STATUS
+		from METER_REL
+		<where>
+			<if test="id !=null">
+				and ID = #{id}
+			</if>
+			<if test="meterId !=null">
+				and METER_ID = #{meterId}
+			</if>
+			<if test="pMeterId !=null">
+				and P_METER_ID = #{pMeterId}
+			</if>
+			<if test="meterRelationType !=null">
+				and METER_RELATION_TYPE = #{meterRelationType}
+			</if>
+			<if test="meterRelationValue !=null">
+				and METER_RELATION_VALUE = #{meterRelationValue}
+			</if>
+			<if test="createDate !=null">
+				and CREATE_DATE = #{createDate}
+			</if>
+			<if test="remark !=null">
+				and REMARK = #{remark}
+			</if>
+			<if test="status !=null">
+				and STATUS = #{status}
+			</if>
+		</where>
+	</select>
+	<insert id="insert" parameterType="MeterRelationDomain"
+		flushCache="true">
+		insert into
+		METER_REL(ID,METER_ID,P_METER_ID,METER_RELATION_TYPE,METER_RELATION_VALUE,CREATE_DATE,REMARK,STATUS)
+		values
+		(#{id},#{meterId},#{pMeterId},#{meterRelationType},#{meterRelationValue},#{createDate},#{remark},#{status})
+	</insert>
+	<update id="update" parameterType="MeterRelationDomain"
+		flushCache="true">
+		update METER_REL
+		<set>
+			<if test="meterId !=null">
+				METER_ID = #{meterId},
+			</if>
+			<if test="pMeterId !=null">
+				P_METER_ID = #{pMeterId},
+			</if>
+			<if test="meterRelationType !=null">
+				METER_RELATION_TYPE = #{meterRelationType},
+			</if>
+			<if test="meterRelationValue !=null">
+				METER_RELATION_VALUE = #{meterRelationValue},
+			</if>
+			<if test="createDate !=null">
+				CREATE_DATE = #{createDate},
+			</if>
+			<if test="remark !=null">
+				REMARK = #{remark},
+			</if>
+			<if test="status !=null">
+				STATUS = #{status},
+			</if>
+		</set>
+		<where>
+			and ID = #{id}
+
+		</where>
+	</update>
+	<delete id="delete" parameterType="MeterRelationDomain"
+		flushCache="true">
+		delete from METER_REL
+		<where>
+			and ID = #{id}
+
+		</where>
+	</delete>
+
+	<select id="findByMeter" parameterType="String"
+		resultType="MeterRelationDomain" useCache="true">
+		SELECT
+		b.*
+		FROM
+		USER_METER_REL a
+		RIGHT JOIN METER_REL b ON a.METER_ID =
+		b.P_METER_ID
+		<where>
+			a.USER_ID in (${_parameter})
+			AND b.STATUS = 1
+		</where>
+	</select>
+
+	<select id="findByWriteSect" parameterType="String"
+		resultType="MeterRelationDomain" useCache="true">
+		SELECT
+		c.*
+		FROM
+		USER_METER_REL a
+		LEFT JOIN USER_INFO b ON a.USER_ID = b.ID
+		RIGHT JOIN METER_REL c ON a.METER_ID = c.P_METER_ID
+		<where>
+			b.WRITE_SECT_ID in (${_parameter})
+			AND b.STATUS = 1
+		</where>
+	</select>
+</mapper>

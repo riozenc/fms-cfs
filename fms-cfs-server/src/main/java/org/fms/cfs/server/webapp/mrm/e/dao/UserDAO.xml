@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.riozenc.cfs.webapp.mrm.e.dao.UserDAO">
+	<select id="findByKey" parameterType="UserDomain"
+		resultType="UserDomain" useCache="true">
+		select
+		ID,USER_NO,CUSTOMER_ID,USER_NAME,ADDRESS,BUSINESS_PLACE_CODE,WRITE_SECT_ID,ALL_CAPACITY,TRADE_TYPE,ELEC_TYPE,VOLT_LEVEL_TYPE,MS_MODE_TYPE,LOAD_TYPE,IS_HIGH_TYPE,TEMP_TYPE,CREDIT_RANK_TYPE,WRITE_TYPE,USER_TYPE,CREATE_DATE,REMARK,STATUS
+		from USER_INFO
+		<where>
+			and ID = #{id}
+
+		</where>
+	</select>
+	<select id="findByWhere" parameterType="UserDomain"
+		resultType="UserDomain" useCache="true">
+		select
+		ID,USER_NO,CUSTOMER_ID,USER_NAME,ADDRESS,BUSINESS_PLACE_CODE,WRITE_SECT_ID,ALL_CAPACITY,TRADE_TYPE,ELEC_TYPE,VOLT_LEVEL_TYPE,MS_MODE_TYPE,LOAD_TYPE,IS_HIGH_TYPE,TEMP_TYPE,CREDIT_RANK_TYPE,WRITE_TYPE,USER_TYPE,CREATE_DATE,REMARK,STATUS
+		from USER_INFO
+		<where>
+			<if test="id !=null">
+				and ID = #{id}
+			</if>
+			<if test="userNo !=null">
+				and USER_NO = #{userNo}
+			</if>
+			<if test="customerId !=null">
+				and CUSTOMER_ID = #{customerId}
+			</if>
+			<if test="userName !=null">
+				and USER_NAME = #{userName}
+			</if>
+			<if test="address !=null">
+				and ADDRESS = #{address}
+			</if>
+			<if test="businessPlaceCode !=null">
+				and BUSINESS_PLACE_CODE = #{businessPlaceCode}
+			</if>
+			<if test="writeSectId !=null">
+				and WRITE_SECT_ID = #{writeSectId}
+			</if>
+			<if test="allCapacity !=null">
+				and ALL_CAPACITY = #{allCapacity}
+			</if>
+			<if test="tradeType !=null">
+				and TRADE_TYPE = #{tradeType}
+			</if>
+			<if test="elecType !=null">
+				and ELEC_TYPE = #{elecType}
+			</if>
+			<if test="voltLevelType !=null">
+				and VOLT_LEVEL_TYPE = #{voltLevelType}
+			</if>
+			<if test="msModeType !=null">
+				and MS_MODE_TYPE = #{msModeType}
+			</if>
+			<if test="loadType !=null">
+				and LOAD_TYPE = #{loadType}
+			</if>
+			<if test="isHighType !=null">
+				and IS_HIGH_TYPE = #{isHighType}
+			</if>
+			<if test="tempType !=null">
+				and TEMP_TYPE = #{tempType}
+			</if>
+			<if test="creditRankType !=null">
+				and CREDIT_RANK_TYPE = #{creditRankType}
+			</if>
+			<if test="writeType !=null">
+				and WRITE_TYPE = #{writeType}
+			</if>
+			<if test="userType !=null">
+				and USER_TYPE = #{userType}
+			</if>
+			<if test="createDate !=null">
+				and CREATE_DATE = #{createDate}
+			</if>
+			<if test="remark !=null">
+				and REMARK = #{remark}
+			</if>
+			<if test="status !=null">
+				and STATUS = #{status}
+			</if>
+		</where>
+	</select>
+	<insert id="insert" parameterType="UserDomain" flushCache="true">
+		insert into
+		USER_INFO(ID,USER_NO,CUSTOMER_ID,USER_NAME,ADDRESS,BUSINESS_PLACE_CODE,WRITE_SECT_ID,ALL_CAPACITY,TRADE_TYPE,ELEC_TYPE,VOLT_LEVEL_TYPE,MS_MODE_TYPE,LOAD_TYPE,IS_HIGH_TYPE,TEMP_TYPE,CREDIT_RANK_TYPE,WRITE_TYPE,USER_TYPE,CREATE_DATE,REMARK,STATUS)
+		values
+		(#{id},#{userNo},#{customerId},#{userName},#{address},#{businessPlaceCode},#{writeSectId},#{allCapacity},#{tradeType},#{elecType},#{voltLevelType},#{msModeType},#{loadType},#{isHighType},#{tempType},#{creditRankType},#{writeType},#{userType},#{createDate},#{remark},#{status})
+	</insert>
+	<update id="update" parameterType="UserDomain" flushCache="true">
+		update USER_INFO
+		<set>
+			<if test="userNo !=null">
+				USER_NO = #{userNo},
+			</if>
+			<if test="customerId !=null">
+				CUSTOMER_ID = #{customerId},
+			</if>
+			<if test="userName !=null">
+				USER_NAME = #{userName},
+			</if>
+			<if test="address !=null">
+				ADDRESS = #{address},
+			</if>
+			<if test="businessPlaceCode !=null">
+				BUSINESS_PLACE_CODE = #{businessPlaceCode},
+			</if>
+			<if test="writeSectId !=null">
+				WRITE_SECT_ID = #{writeSectId},
+			</if>
+			<if test="allCapacity !=null">
+				ALL_CAPACITY = #{allCapacity},
+			</if>
+			<if test="tradeType !=null">
+				TRADE_TYPE = #{tradeType},
+			</if>
+			<if test="elecType !=null">
+				ELEC_TYPE = #{elecType},
+			</if>
+			<if test="voltLevelType !=null">
+				VOLT_LEVEL_TYPE = #{voltLevelType},
+			</if>
+			<if test="msModeType !=null">
+				MS_MODE_TYPE = #{msModeType},
+			</if>
+			<if test="loadType !=null">
+				LOAD_TYPE = #{loadType},
+			</if>
+			<if test="isHighType !=null">
+				IS_HIGH_TYPE = #{isHighType},
+			</if>
+			<if test="tempType !=null">
+				TEMP_TYPE = #{tempType},
+			</if>
+			<if test="creditRankType !=null">
+				CREDIT_RANK_TYPE = #{creditRankType},
+			</if>
+			<if test="writeType !=null">
+				WRITE_TYPE = #{writeType},
+			</if>
+			<if test="userType !=null">
+				USER_TYPE = #{userType},
+			</if>
+			<if test="createDate !=null">
+				CREATE_DATE = #{createDate},
+			</if>
+			<if test="remark !=null">
+				REMARK = #{remark},
+			</if>
+			<if test="status !=null">
+				STATUS = #{status},
+			</if>
+		</set>
+		<where>
+			and ID = #{id}
+
+		</where>
+	</update>
+	<delete id="delete" parameterType="UserDomain" flushCache="true">
+		delete from USER_INFO
+		<where>
+			and ID = #{id}
+		</where>
+	</delete>
+
+
+	<select id="getUserAllInfo" parameterType="UserDomain"
+		resultType="UserDomain" useCache="true">
+		SELECT
+		a.*, b.CUSTOMER_NAME,
+		b.ADDRESS,
+		b.CARD_TYPE,
+		b.CARD_NO,
+		b.LINK_MAN,
+		b.CONTACT_INFORMATION
+		FROM
+		USER_INFO a
+		LEFT JOIN
+		CUSTOMER_INFO b ON a.CUSTOMER_ID = b.ID
+		<where>
+
+			<if test="userNo !=null">
+				and a.USER_NO like CONCAT('%',#{userNo},'%')
+			</if>
+			<if test="userName !=null">
+				and a.USER_NAME like CONCAT('%',#{userName},'%')
+			</if>
+			<if test="address !=null">
+				and a.ADDRESS like CONCAT('%',#{address},'%')
+			</if>
+			<if test="status !=null">
+				and STATUS = #{status}
+			</if>
+		</where>
+	</select>
+
+</mapper>

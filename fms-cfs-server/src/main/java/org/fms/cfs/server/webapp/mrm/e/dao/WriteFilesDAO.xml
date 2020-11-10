@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.riozenc.cfs.webapp.mrm.e.dao.WriteFilesDAO">
+	<select id="findByKey" parameterType="WriteFilesDomain"
+		resultType="WriteFilesDomain" useCache="true">
+		select
+		ID,METER_ID,INIT_DATE,WRITE_DATE,LAST_WRITE_DATE,SN,WRITE_FLAG,WRITE_METHOD,TIME_SEG,START_NUM,END_NUM,DIFF_NUM,WRITE_POWER,CHG_POWER,ADD_POWER,INPUT_MAN
+		from WRITE_FILES_INFO
+		<where>
+			and ID = #{id}
+
+		</where>
+	</select>
+	<select id="findByWhere" parameterType="WriteFilesDomain"
+		resultType="WriteFilesDomain" useCache="true">
+		select
+		ID,METER_ID,INIT_DATE,WRITE_DATE,LAST_WRITE_DATE,SN,WRITE_FLAG,WRITE_METHOD,TIME_SEG,START_NUM,END_NUM,DIFF_NUM,WRITE_POWER,CHG_POWER,ADD_POWER,INPUT_MAN
+		from WRITE_FILES_INFO
+		<where>
+			<if test="id !=null">
+				and ID = #{id}
+			</if>
+			<if test="meterId !=null">
+				and METER_ID = #{meterId}
+			</if>
+			<if test="initDate !=null">
+				and INIT_DATE = #{initDate}
+			</if>
+			<if test="writeDate !=null">
+				and WRITE_DATE = #{writeDate}
+			</if>
+			<if test="lastWriteDate !=null">
+				and LAST_WRITE_DATE = #{lastWriteDate}
+			</if>
+			<if test="sn !=null">
+				and SN = #{sn}
+			</if>
+			<if test="writeFlag !=null">
+				and WRITE_FLAG = #{writeFlag}
+			</if>
+			<if test="writeMethod !=null">
+				and WRITE_METHOD = #{writeMethod}
+			</if>
+			<if test="timeSeg !=null">
+				and TIME_SEG = #{timeSeg}
+			</if>
+			<if test="startNum !=null">
+				and START_NUM = #{startNum}
+			</if>
+			<if test="endNum !=null">
+				and END_NUM = #{endNum}
+			</if>
+			<if test="diffNum !=null">
+				and DIFF_NUM = #{diffNum}
+			</if>
+			<if test="writePower !=null">
+				and WRITE_POWER = #{writePower}
+			</if>
+			<if test="chgPower !=null">
+				and CHG_POWER = #{chgPower}
+			</if>
+			<if test="addPower !=null">
+				and ADD_POWER = #{addPower}
+			</if>
+			<if test="inputMan !=null">
+				and INPUT_MAN = #{inputMan}
+			</if>
+		</where>
+	</select>
+	<insert id="insert" parameterType="WriteFilesDomain"
+		flushCache="true">
+		insert into
+		WRITE_FILES_INFO(ID,METER_ID,INIT_DATE,WRITE_DATE,LAST_WRITE_DATE,SN,WRITE_FLAG,WRITE_METHOD,TIME_SEG,START_NUM,END_NUM,DIFF_NUM,WRITE_POWER,CHG_POWER,ADD_POWER,INPUT_MAN)
+		values
+		(#{id},#{meterId},#{initDate},#{writeDate},#{lastWriteDate},#{sn},#{writeFlag},#{writeMethod},#{timeSeg},#{startNum},#{endNum},#{diffNum},#{writePower},#{chgPower},#{addPower},#{inputMan})
+	</insert>
+	<update id="update" parameterType="WriteFilesDomain"
+		flushCache="true">
+		update WRITE_FILES_INFO
+		<set>
+			<if test="meterId !=null">
+				METER_ID = #{meterId},
+			</if>
+			<if test="initDate !=null">
+				INIT_DATE = #{initDate},
+			</if>
+			<if test="writeDate !=null">
+				WRITE_DATE = #{writeDate},
+			</if>
+			<if test="lastWriteDate !=null">
+				LAST_WRITE_DATE = #{lastWriteDate},
+			</if>
+			<if test="sn !=null">
+				SN = #{sn},
+			</if>
+			<if test="writeFlag !=null">
+				WRITE_FLAG = #{writeFlag},
+			</if>
+			<if test="writeMethod !=null">
+				WRITE_METHOD = #{writeMethod},
+			</if>
+			<if test="timeSeg !=null">
+				TIME_SEG = #{timeSeg},
+			</if>
+			<if test="startNum !=null">
+				START_NUM = #{startNum},
+			</if>
+			<if test="endNum !=null">
+				END_NUM = #{endNum},
+			</if>
+			<if test="diffNum !=null">
+				DIFF_NUM = #{diffNum},
+			</if>
+			<if test="writePower !=null">
+				WRITE_POWER = #{writePower},
+			</if>
+			<if test="chgPower !=null">
+				CHG_POWER = #{chgPower},
+			</if>
+			<if test="addPower !=null">
+				ADD_POWER = #{addPower},
+			</if>
+			<if test="inputMan !=null">
+				INPUT_MAN = #{inputMan},
+			</if>
+		</set>
+		<where>
+			and ID = #{id}
+
+		</where>
+	</update>
+	<delete id="delete" parameterType="WriteFilesDomain"
+		flushCache="true">
+		delete from WRITE_FILES_INFO
+		<where>
+			and ID = #{id}
+
+		</where>
+	</delete>
+</mapper>

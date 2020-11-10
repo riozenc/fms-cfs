@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.riozenc.cfs.webapp.mrm.e.dao.MeterDAO">
+	<select id="findByKey" parameterType="ElectricMeterDomain"
+		resultType="ElectricMeterDomain" useCache="true">
+		select
+		ID,METER_NO,METER_NAME,METER_ASSETS_ID,SET_ADDRESS,CT_ASSETS_ID,PT_ASSETS_ID,CT_VALUE,PT_VALUE,PRICE_TYPE,NEED_INDEX,VOLT_LEVEL_TYPE,METER_TYPE,METER_CLASS_TYPE,MS_TYPE,ELEC_TYPE_CODE,BASE_MONEY_FLAG,COS_TYPE,TRADE_TYPE,TS_TYPE,TRANS_LOST_TYPE,TRANS_LOST_NUM,Q_TRANS_LOST_NUM,LINE_LOST_TYPE,LINE_LOST_NUM,Q_LINE_LOST_NUM,CREATE_DATE,REMARK,STATUS
+		from METER_INFO
+		<where>
+			and ID = #{id}
+
+		</where>
+	</select>
+	<select id="findByWhere" parameterType="ElectricMeterDomain"
+		resultType="ElectricMeterDomain" useCache="true">
+		select
+		ID,METER_NO,METER_NAME,METER_ASSETS_ID,SET_ADDRESS,CT_ASSETS_ID,PT_ASSETS_ID,CT_VALUE,PT_VALUE,PRICE_TYPE,NEED_INDEX,VOLT_LEVEL_TYPE,METER_TYPE,METER_CLASS_TYPE,MS_TYPE,ELEC_TYPE_CODE,BASE_MONEY_FLAG,COS_TYPE,TRADE_TYPE,TS_TYPE,TRANS_LOST_TYPE,TRANS_LOST_NUM,Q_TRANS_LOST_NUM,LINE_LOST_TYPE,LINE_LOST_NUM,Q_LINE_LOST_NUM,CREATE_DATE,REMARK,STATUS
+		from METER_INFO
+		<where>
+			<if test="id !=null">
+				and ID = #{id}
+			</if>
+			<if test="meterNo !=null">
+				and METER_NO = #{meterNo}
+			</if>
+			<if test="meterName !=null">
+				and METER_NAME = #{meterName}
+			</if>
+			<if test="meterAssetsId !=null">
+				and METER_ASSETS_ID = #{meterAssetsId}
+			</if>
+			<if test="setAddress !=null">
+				and SET_ADDRESS = #{setAddress}
+			</if>
+			<if test="ctAssetsId !=null">
+				and CT_ASSETS_ID = #{ctAssetsId}
+			</if>
+			<if test="ptAssetsId !=null">
+				and PT_ASSETS_ID = #{ptAssetsId}
+			</if>
+			<if test="ctValue !=null">
+				and CT_VALUE = #{ctValue}
+			</if>
+			<if test="ptValue !=null">
+				and PT_VALUE = #{ptValue}
+			</if>
+			<if test="priceType !=null">
+				and PRICE_TYPE = #{priceType}
+			</if>
+			<if test="needIndex !=null">
+				and NEED_INDEX = #{needIndex}
+			</if>
+			<if test="voltLevelType !=null">
+				and VOLT_LEVEL_TYPE = #{voltLevelType}
+			</if>
+			<if test="meterType !=null">
+				and METER_TYPE = #{meterType}
+			</if>
+			<if test="meterClassType !=null">
+				and METER_CLASS_TYPE = #{meterClassType}
+			</if>
+			<if test="msType !=null">
+				and MS_TYPE = #{msType}
+			</if>
+			<if test="elecTypeCode !=null">
+				and ELEC_TYPE_CODE = #{elecTypeCode}
+			</if>
+			<if test="baseMoneyFlag !=null">
+				and BASE_MONEY_FLAG = #{baseMoneyFlag}
+			</if>
+			<if test="cosType !=null">
+				and COS_TYPE = #{cosType}
+			</if>
+			<if test="tradeType !=null">
+				and TRADE_TYPE = #{tradeType}
+			</if>
+			<if test="tsType !=null">
+				and TS_TYPE = #{tsType}
+			</if>
+			<if test="transLostType !=null">
+				and TRANS_LOST_TYPE = #{transLostType}
+			</if>
+			<if test="transLostNum !=null">
+				and TRANS_LOST_NUM = #{transLostNum}
+			</if>
+			<if test="qTransLostNum !=null">
+				and Q_TRANS_LOST_NUM = #{qTransLostNum}
+			</if>
+			<if test="lineLostType !=null">
+				and LINE_LOST_TYPE = #{lineLostType}
+			</if>
+			<if test="lineLostNum !=null">
+				and LINE_LOST_NUM = #{lineLostNum}
+			</if>
+			<if test="qLineLostNum !=null">
+				and Q_LINE_LOST_NUM = #{qLineLostNum}
+			</if>
+			<if test="createDate !=null">
+				and CREATE_DATE = #{createDate}
+			</if>
+			<if test="remark !=null">
+				and REMARK = #{remark}
+			</if>
+			<if test="status !=null">
+				and STATUS = #{status}
+			</if>
+		</where>
+	</select>
+	<insert id="insert" parameterType="ElectricMeterDomain"
+		flushCache="true">
+		insert into
+		METER_INFO(ID,METER_NO,METER_NAME,METER_ASSETS_ID,SET_ADDRESS,CT_ASSETS_ID,PT_ASSETS_ID,CT_VALUE,PT_VALUE,PRICE_TYPE,NEED_INDEX,VOLT_LEVEL_TYPE,METER_TYPE,METER_CLASS_TYPE,MS_TYPE,ELEC_TYPE_CODE,BASE_MONEY_FLAG,COS_TYPE,TRADE_TYPE,TS_TYPE,TRANS_LOST_TYPE,TRANS_LOST_NUM,Q_TRANS_LOST_NUM,LINE_LOST_TYPE,LINE_LOST_NUM,Q_LINE_LOST_NUM,CREATE_DATE,REMARK,STATUS)
+		values
+		(#{id},#{meterNo},#{meterName},#{meterAssetsId},#{setAddress},#{ctAssetsId},#{ptAssetsId},#{ctValue},#{ptValue},#{priceType},#{needIndex},#{voltLevelType},#{meterType},#{meterClassType},#{msType},#{elecTypeCode},#{baseMoneyFlag},#{cosType},#{tradeType},#{tsType},#{transLostType},#{transLostNum},#{qTransLostNum},#{lineLostType},#{lineLostNum},#{qLineLostNum},#{createDate},#{remark},#{status})
+	</insert>
+	<update id="update" parameterType="ElectricMeterDomain"
+		flushCache="true">
+		update METER_INFO
+		<set>
+			<if test="meterNo !=null">
+				METER_NO = #{meterNo},
+			</if>
+			<if test="meterName !=null">
+				METER_NAME = #{meterName},
+			</if>
+			<if test="meterAssetsId !=null">
+				METER_ASSETS_ID = #{meterAssetsId},
+			</if>
+			<if test="setAddress !=null">
+				SET_ADDRESS = #{setAddress},
+			</if>
+			<if test="ctAssetsId !=null">
+				CT_ASSETS_ID = #{ctAssetsId},
+			</if>
+			<if test="ptAssetsId !=null">
+				PT_ASSETS_ID = #{ptAssetsId},
+			</if>
+			<if test="ctValue !=null">
+				CT_VALUE = #{ctValue},
+			</if>
+			<if test="ptValue !=null">
+				PT_VALUE = #{ptValue},
+			</if>
+			<if test="priceType !=null">
+				PRICE_TYPE = #{priceType},
+			</if>
+			<if test="needIndex !=null">
+				NEED_INDEX = #{needIndex},
+			</if>
+			<if test="voltLevelType !=null">
+				VOLT_LEVEL_TYPE = #{voltLevelType},
+			</if>
+			<if test="meterType !=null">
+				METER_TYPE = #{meterType},
+			</if>
+			<if test="meterClassType !=null">
+				METER_CLASS_TYPE = #{meterClassType},
+			</if>
+			<if test="msType !=null">
+				MS_TYPE = #{msType},
+			</if>
+			<if test="elecTypeCode !=null">
+				ELEC_TYPE_CODE = #{elecTypeCode},
+			</if>
+			<if test="baseMoneyFlag !=null">
+				BASE_MONEY_FLAG = #{baseMoneyFlag},
+			</if>
+			<if test="cosType !=null">
+				COS_TYPE = #{cosType},
+			</if>
+			<if test="tradeType !=null">
+				TRADE_TYPE = #{tradeType},
+			</if>
+			<if test="tsType !=null">
+				TS_TYPE = #{tsType},
+			</if>
+			<if test="transLostType !=null">
+				TRANS_LOST_TYPE = #{transLostType},
+			</if>
+			<if test="transLostNum !=null">
+				TRANS_LOST_NUM = #{transLostNum},
+			</if>
+			<if test="qTransLostNum !=null">
+				Q_TRANS_LOST_NUM = #{qTransLostNum},
+			</if>
+			<if test="lineLostType !=null">
+				LINE_LOST_TYPE = #{lineLostType},
+			</if>
+			<if test="lineLostNum !=null">
+				LINE_LOST_NUM = #{lineLostNum},
+			</if>
+			<if test="qLineLostNum !=null">
+				Q_LINE_LOST_NUM = #{qLineLostNum},
+			</if>
+			<if test="createDate !=null">
+				CREATE_DATE = #{createDate},
+			</if>
+			<if test="remark !=null">
+				REMARK = #{remark},
+			</if>
+			<if test="status !=null">
+				STATUS = #{status},
+			</if>
+
+		</set>
+		<where>
+			and ID = #{id}
+
+		</where>
+	</update>
+	<delete id="delete" parameterType="ElectricMeterDomain"
+		flushCache="true">
+		delete from METER_INFO
+		<where>
+			and ID = #{id}
+
+		</where>
+	</delete>
+
+
+	<select id="getMeterByUser" parameterType="UserDomain"
+		resultType="ElectricMeterDomain" useCache="true">
+		SELECT a.* FROM METER_INFO a LEFT JOIN USER_METER_REL b ON a.ID =
+		b.METER_ID LEFT JOIN USER_INFO c ON b.USER_ID = c.ID
+		<where>
+			a.STATUS = 1 and b.STATUS = 1
+
+			<if test="userNo !=null">
+				and c.USER_NO = #{userNo}
+			</if>
+			<if test="userName !=null">
+				and c.USER_NAME = #{userName}
+			</if>
+			<if test="address !=null">
+				and c.ADDRESS = #{address}
+			</if>
+		</where>
+	</select>
+
+
+	<select id="getMeterRel" parameterType="ElectricMeterDomain"
+		resultType="MeterRelationDomain" useCache="true">
+
+		SELECT
+		b.METER_NO,b.METER_NAME,b.SET_ADDRESS,
+		a.ID,a.P_METER_ID,
+		a.METER_ID,a.METER_RELATION_TYPE,a.METER_RELATION_VALUE
+
+		FROM
+		(SELECT *
+		FROM METER_REL
+		<where>
+			P_METER_ID = #{id} and STATUS = 1
+		</where>
+		)a
+		LEFT JOIN METER_INFO b ON a.METER_ID = b.ID
+
+	</select>
+
+	<insert id="insertMeterRel" parameterType="MeterRelationDomain"
+		flushCache="true">
+		insert into
+		METER_REL
+		(
+		METER_ID,P_METER_ID,METER_RELATION_TYPE,METER_RELATION_VALUE,CREATE_DATE,UPDATE_DATE,STATUS
+		)
+		values
+		(
+		#{meterId},#{pMeterId},#{meterRelationType},#{meterRelationValue},#{createDate},#{updateDate},#{status}
+		)
+	</insert>
+
+	<update id="updateMeterRel" parameterType="MeterRelationDomain"
+		flushCache="true">
+		update METER_REL
+		<set>
+			<if test="meterId !=null">
+				METER_ID = #{meterId},
+			</if>
+			<if test="meterRelationType !=null">
+				METER_RELATION_TYPE = #{meterRelationType},
+			</if>
+			<if test="meterRelationValue !=null">
+				METER_RELATION_VALUE = #{meterRelationValue},
+			</if>
+			<if test="updateDate !=null">
+				UPDATE_DATE = #{updateDate},
+			</if>
+			<if test="remark !=null">
+				REMARK = #{remark},
+			</if>
+			<if test="status !=null">
+				STATUS = #{status}
+			</if>
+
+		</set>
+		<where>
+			and ID = #{id} and P_METER_ID = #{pMeterId}
+
+		</where>
+	</update>
+
+	<update id="deleteMeterRel" parameterType="MeterRelationDomain"
+		flushCache="true">
+		update METER_REL
+		<set>
+			<if test="updateDate !=null">
+				UPDATE_DATE = #{updateDate},
+			</if>
+			STATUS = 0
+
+		</set>
+		<where>
+			and ID = #{id} and P_METER_ID = #{pMeterId}
+
+		</where>
+	</update>
+
+	<select id="findByMeter" parameterType="String"
+		resultType="ElectricMeterDomain" useCache="true">
+		select
+		ID,METER_NO,METER_NAME,METER_ASSETS_ID,SET_ADDRESS,CT_ASSETS_ID,PT_ASSETS_ID,CT_VALUE,PT_VALUE,PRICE_TYPE,NEED_INDEX,VOLT_LEVEL_TYPE,METER_TYPE,METER_CLASS_TYPE,MS_TYPE,ELEC_TYPE_CODE,BASE_MONEY_FLAG,COS_TYPE,TRADE_TYPE,TS_TYPE,TRANS_LOST_TYPE,TRANS_LOST_NUM,Q_TRANS_LOST_NUM,LINE_LOST_TYPE,LINE_LOST_NUM,Q_LINE_LOST_NUM,CREATE_DATE,REMARK,STATUS
+		from METER_INFO
+		<where>
+			ID in (${_parameter})
+			and STATUS = 1
+		</where>
+	</select>
+	<select id="findByUser" parameterType="String"
+		resultType="ElectricMeterDomain" useCache="true">
+		SELECT
+		b.*
+		FROM
+		USER_METER_REL a
+		LEFT JOIN METER_INFO b ON a.METER_ID =
+		b.ID
+		<where>
+			a.USER_ID in (${_parameter})
+			and b.STATUS = 1
+		</where>
+	</select>
+	<select id="findByWriteSect" parameterType="String"
+		resultType="ElectricMeterDomain" useCache="true">
+		SELECT
+		c.*
+		FROM
+		USER_METER_REL a
+		LEFT JOIN USER_INFO b ON a.USER_ID = b.ID
+		LEFT JOIN METER_INFO c ON a.METER_ID = c.ID
+		<where>
+			b.WRITE_SECT_ID in (${_parameter})
+			and c.STATUS = 1
+		</where>
+	</select>
+</mapper>

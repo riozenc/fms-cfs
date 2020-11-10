@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.riozenc.cfs.webapp.mrm.e.dao.LineDAO">
+<select id="findByKey" parameterType="LineDomain" resultType="LineDomain" useCache="true">
+	select 
+		ID,
+		LINE_CODE,
+		LINE_NAME,
+		VOLT_TYPE,
+		LINE_TYPE,
+		RUN_DATE,
+		SWITCH_NO,
+		LINE_MODEL,
+		LINE_LENGHT,
+		RATING_CURNT,
+		RATING_VOL,
+		CREATE_DATE,
+		REMARK,
+		STATUS
+	from 
+		LINE_INFO
+	<where>
+ 		and ID = #{id}
+	</where>
+</select>
+<select id="findByWhere" parameterType="LineDomain" resultType="LineDomain" useCache="true">
+	select 
+		r.BEGIN_SUBS_ID,
+		r.END_SUBS_ID,
+		l.ID,
+		l.LINE_CODE,
+		l.LINE_NAME,
+		l.VOLT_TYPE,
+		l.LINE_TYPE,
+		l.RUN_DATE,
+		l.SWITCH_NO,
+		l.LINE_MODEL,
+		l.LINE_LENGHT,
+		l.RATING_CURNT,
+		l.RATING_VOL,
+		l.CREATE_DATE,
+		l.REMARK,
+		l.STATUS
+	from 
+		LINE_INFO l
+	<where>
+		<if test="id !=null"> 
+			 and l.ID = #{id}
+		</if>
+		<if test="lineCode !=null"> 
+			 and l.LINE_CODE = #{lineCode}
+		</if>
+		<if test="lineName !=null"> 
+			 and l.LINE_NAME = #{lineName}
+		</if>
+		<if test="voltType !=null"> 
+			 and l.VOLT_TYPE = #{voltType}
+		</if>
+		<if test="lineType !=null"> 
+			 and l.LINE_TYPE = #{lineType}
+		</if>
+		<if test="runDate !=null"> 
+			 and l.RUN_DATE = #{runDate}
+		</if>
+		<if test="switchNo !=null"> 
+			 and l.SWITCH_NO = #{switchNo}
+		</if>
+		<if test="lineModel !=null"> 
+			 and l.LINE_MODEL = #{lineModel}
+		</if>
+		<if test="lineLenght !=null"> 
+			 and l.LINE_LENGHT = #{lineLenght}
+		</if>
+		<if test="ratingCurnt !=null"> 
+			 and l.RATING_CURNT = #{ratingCurnt}
+		</if>
+		<if test="ratingVol !=null"> 
+			 and l.RATING_VOL = #{ratingVol}
+		</if>
+		<if test="createDate !=null"> 
+			 and l.CREATE_DATE = #{createDate}
+		</if>
+		<if test="remark !=null"> 
+			 and l.REMARK = #{remark}
+		</if>
+		<if test="status !=null"> 
+			 and l.STATUS = #{status}
+		</if>
+	</where>
+	left join SUBS_LINE_REL r on l.id= r.line_id
+</select>
+
+
+
+
+<insert id="insert" parameterType="LineDomain"  useGeneratedKeys="true" keyProperty="id" flushCache="true">
+insert into LINE_INFO
+	(
+		ID,
+		LINE_CODE,
+		LINE_NAME,
+		VOLT_TYPE,
+		LINE_TYPE,
+		RUN_DATE,
+		SWITCH_NO,
+		LINE_MODEL,
+		LINE_LENGHT,
+		RATING_CURNT,
+		RATING_VOL,
+		CREATE_DATE,
+		REMARK,
+		STATUS	
+	) 
+values 
+	(
+		#{id},
+		#{lineCode},
+		#{lineName},
+		#{voltType},
+		#{lineType},
+		#{runDate},
+		#{switchNo},
+		#{lineModel},
+		#{lineLenght},
+		#{ratingCurnt},
+		#{ratingVol},
+		#{createDate},
+		#{remark},
+		#{status}
+	)
+</insert>
+
+<update id="update" parameterType="LineDomain" flushCache="true">
+	update LINE_INFO
+	<set>
+
+		<if test="lineCode !=null"> 
+			LINE_CODE = #{lineCode},
+		</if>
+		<if test="lineName !=null"> 
+			LINE_NAME = #{lineName},
+		</if>
+		<if test="voltType !=null"> 
+			VOLT_TYPE = #{voltType},
+		</if>
+		<if test="lineType !=null"> 
+			LINE_TYPE = #{lineType},
+		</if>
+		<if test="runDate !=null"> 
+			RUN_DATE = #{runDate},
+		</if>
+		<if test="switchNo !=null"> 
+			SWITCH_NO = #{switchNo},
+		</if>
+		<if test="lineModel !=null"> 
+			LINE_MODEL = #{lineModel},
+		</if>
+		<if test="lineLenght !=null"> 
+			LINE_LENGHT = #{lineLenght},
+		</if>
+		<if test="ratingCurnt !=null"> 
+			RATING_CURNT = #{ratingCurnt},
+		</if>
+		<if test="ratingVol !=null"> 
+			RATING_VOL = #{ratingVol},
+		</if>
+		<if test="createDate !=null">
+			CREATE_DATE = #{createDate},
+		</if>
+		<if test="remark !=null">
+			REMARK = #{remark},
+		</if>
+		<if test="status !=null">
+			STATUS = #{status},
+		</if>
+	</set>
+	<where>
+ 		and ID = #{id}
+
+	</where>
+</update>
+<delete id="delete" parameterType="LineDomain" flushCache="true">
+	delete from LINE_INFO
+	<where>
+		 and ID = #{id}
+
+	</where>
+</delete>
+</mapper>

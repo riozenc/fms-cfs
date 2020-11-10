@@ -1,0 +1,23 @@
+server:
+ port: 13333
+ servlet:
+  context-path: /cfs
+spring:
+ application:
+  name: CFS
+eureka:
+  instance: 
+    prefer-ip-address: true
+    #ip-address: 172.21.29.75
+  client:
+    #registerWithEureka: false
+    serviceUrl:
+     defaultZone: http://enn:df6100@172.21.29.55:7777/enn/eureka/
+logging:
+  level:
+    org.fms.cfs: info
+  path: log
+  
+rocketmq:
+ namesrvAddr: 172.21.29.55:9876
+ consumerGroup: titan
