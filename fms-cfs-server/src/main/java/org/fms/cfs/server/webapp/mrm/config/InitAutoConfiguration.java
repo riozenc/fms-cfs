@@ -22,6 +22,7 @@ import org.fms.cfs.server.webapp.mrm.filter.datainit.TransformerInitFilter;
 import org.fms.cfs.server.webapp.mrm.filter.datainit.TransformerMeterRelationFilter;
 import org.fms.cfs.server.webapp.mrm.filter.datainit.WriteFilesInitFilter2;
 import org.fms.cfs.server.webapp.mrm.filter.systemInit.CosStandardInitFilter;
+import org.fms.cfs.server.webapp.mrm.filter.systemInit.DeptMonInitFilter;
 import org.fms.cfs.server.webapp.mrm.filter.systemInit.MongoCollectionFilter;
 import org.fms.cfs.server.webapp.mrm.filter.systemInit.PriceInitFilter;
 import org.fms.cfs.server.webapp.mrm.filter.systemInit.PriceLadderInitFilter;
@@ -44,10 +45,10 @@ public class InitAutoConfiguration {
 		return new FilteringInitHandler(initFilters);
 	}
 
-//	@Bean
-//	public SystemInitFilter deptMonInitFilter() {
-//		return new DeptMonInitFilter();
-//	}
+	@Bean
+	public SystemInitFilter deptMonInitFilter() {
+		return new DeptMonInitFilter();
+	}
 
 	@Bean
 	public SystemInitFilter systemCommonParamInitFilter() {
