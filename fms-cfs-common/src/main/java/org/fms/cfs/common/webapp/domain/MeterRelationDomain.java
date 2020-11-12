@@ -32,6 +32,36 @@ public class MeterRelationDomain implements MybatisEntity {
 	private Date createDate;// 创建时间 CREATE_DATE datetime FALSE FALSE FALSE
 	private String remark;// 备注 REMARK varchar(256) 256 FALSE FALSE FALSE
 	private Byte status;// 状态 STATUS smallint FALSE FALSE FALSE
+    
+	private String meterName;
+	private String meterNo;
+	private String meterOrder;
+
+	
+	
+	public String getMeterName() {
+		return meterName;
+	}
+
+	public void setMeterName(String meterName) {
+		this.meterName = meterName;
+	}
+
+	public String getMeterNo() {
+		return meterNo;
+	}
+
+	public void setMeterNo(String meterNo) {
+		this.meterNo = meterNo;
+	}
+
+	public String getMeterOrder() {
+		return meterOrder;
+	}
+
+	public void setMeterOrder(String meterOrder) {
+		this.meterOrder = meterOrder;
+	}
 
 	public String get_id() {
 		return _id;

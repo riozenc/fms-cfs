@@ -25,6 +25,8 @@ public class MeterDomain {
 	private String _id;
 	private Long id;// ID ID bigint TRUE FALSE TRUE
 	private String meterNo; // 计量点号
+	private Integer meterOrder;// 计量点序号
+	private Integer meterSn;// 计量点序号
 	private String meterName; // 计量点名称
 	private Long meterAssetsId; // 电表资产ID
 	private String setAddress; // 安装地点
@@ -67,13 +69,18 @@ public class MeterDomain {
 	private Byte writeMethod;// 抄表方式
 	private Byte countTimes = 1;// COUNT_TIMES 算费次数
 	private BigDecimal chargingCapacity;// CHARGING_CAPACITY 计费容量
-
+	private Byte rateFlag; // 时段 RATE_FLAG
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createDate; // 创建时间
 	private String remark; // 备注
 	private Byte status; // 状态
 
 	private Integer ladderNum; // 阶梯电价用户基数
+	
+	private Byte phaseSeq; // 相序
+	
+	private Byte fkFlag;// 费控标识
+	private Byte bdFlag;// 保电标识
 
 //	private Byte rateFlag;// 分时标志
 	/*--------------------------以下为非数据库字段------------------------------------------*/
@@ -85,6 +92,234 @@ public class MeterDomain {
 	private String writeSectName;//
 	private Long businessPlaceCode;// 营业区域ID
 	private Long writorId;// 抄表员ID
+
+	
+	private String deskName; // 变压器名称
+
+	
+
+	private Long customerId; // 客户ID
+
+	private String tgNo; // 台区号
+	private String tgName;// 台区名称
+
+	
+	private String meterAssetsNo; // 电表资产号
+
+	private String ctAssetsNo;// CT资产号
+	private Long ratedCtCode; // CT变比
+
+	private String ptAssetsNo;// PT资产号
+	private Long ratedPtCode;// PT变比
+
+	private String transformerGroupNo; // 变压器组号
+
+	private String transformerAssetsNo; // 变压器资产编号
+
+	private String idList;
+
+	private String writeSn;
+
+	private String madeNo;
+
+	private String address;
+
+	private String settlementNo;// 结算户编号 SETTLEMENT_NO varchar(16) 16 FALSE FALSE FALSE
+	private String settlementName;// 结算人 SETTLEMENT_NAME varchar(64) 64 FALSE FALSE FALSE
+	private String settlementPhone;// 结算人电话 SETTLEMENT_PHONE varchar(11) 11 FALSE FALSE FALSE
+	
+	
+	public Integer getMeterOrder() {
+		return meterOrder;
+	}
+
+	public void setMeterOrder(Integer meterOrder) {
+		this.meterOrder = meterOrder;
+	}
+
+	public Integer getMeterSn() {
+		return meterSn;
+	}
+
+	public void setMeterSn(Integer meterSn) {
+		this.meterSn = meterSn;
+	}
+
+	public Byte getRateFlag() {
+		return rateFlag;
+	}
+
+	public void setRateFlag(Byte rateFlag) {
+		this.rateFlag = rateFlag;
+	}
+
+	public Byte getPhaseSeq() {
+		return phaseSeq;
+	}
+
+	public void setPhaseSeq(Byte phaseSeq) {
+		this.phaseSeq = phaseSeq;
+	}
+
+	public Byte getFkFlag() {
+		return fkFlag;
+	}
+
+	public void setFkFlag(Byte fkFlag) {
+		this.fkFlag = fkFlag;
+	}
+
+	public Byte getBdFlag() {
+		return bdFlag;
+	}
+
+	public void setBdFlag(Byte bdFlag) {
+		this.bdFlag = bdFlag;
+	}
+
+	public String getDeskName() {
+		return deskName;
+	}
+
+	public void setDeskName(String deskName) {
+		this.deskName = deskName;
+	}
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
+
+	public String getTgNo() {
+		return tgNo;
+	}
+
+	public void setTgNo(String tgNo) {
+		this.tgNo = tgNo;
+	}
+
+	public String getTgName() {
+		return tgName;
+	}
+
+	public void setTgName(String tgName) {
+		this.tgName = tgName;
+	}
+
+	public String getMeterAssetsNo() {
+		return meterAssetsNo;
+	}
+
+	public void setMeterAssetsNo(String meterAssetsNo) {
+		this.meterAssetsNo = meterAssetsNo;
+	}
+
+	public String getCtAssetsNo() {
+		return ctAssetsNo;
+	}
+
+	public void setCtAssetsNo(String ctAssetsNo) {
+		this.ctAssetsNo = ctAssetsNo;
+	}
+
+	public Long getRatedCtCode() {
+		return ratedCtCode;
+	}
+
+	public void setRatedCtCode(Long ratedCtCode) {
+		this.ratedCtCode = ratedCtCode;
+	}
+
+	public String getPtAssetsNo() {
+		return ptAssetsNo;
+	}
+
+	public void setPtAssetsNo(String ptAssetsNo) {
+		this.ptAssetsNo = ptAssetsNo;
+	}
+
+	public Long getRatedPtCode() {
+		return ratedPtCode;
+	}
+
+	public void setRatedPtCode(Long ratedPtCode) {
+		this.ratedPtCode = ratedPtCode;
+	}
+
+	public String getTransformerGroupNo() {
+		return transformerGroupNo;
+	}
+
+	public void setTransformerGroupNo(String transformerGroupNo) {
+		this.transformerGroupNo = transformerGroupNo;
+	}
+
+	public String getTransformerAssetsNo() {
+		return transformerAssetsNo;
+	}
+
+	public void setTransformerAssetsNo(String transformerAssetsNo) {
+		this.transformerAssetsNo = transformerAssetsNo;
+	}
+
+	public String getIdList() {
+		return idList;
+	}
+
+	public void setIdList(String idList) {
+		this.idList = idList;
+	}
+
+	public String getWriteSn() {
+		return writeSn;
+	}
+
+	public void setWriteSn(String writeSn) {
+		this.writeSn = writeSn;
+	}
+
+	public String getMadeNo() {
+		return madeNo;
+	}
+
+	public void setMadeNo(String madeNo) {
+		this.madeNo = madeNo;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getSettlementNo() {
+		return settlementNo;
+	}
+
+	public void setSettlementNo(String settlementNo) {
+		this.settlementNo = settlementNo;
+	}
+
+	public String getSettlementName() {
+		return settlementName;
+	}
+
+	public void setSettlementName(String settlementName) {
+		this.settlementName = settlementName;
+	}
+
+	public String getSettlementPhone() {
+		return settlementPhone;
+	}
+
+	public void setSettlementPhone(String settlementPhone) {
+		this.settlementPhone = settlementPhone;
+	}
 
 	public String get_id() {
 		return _id;

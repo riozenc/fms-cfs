@@ -28,6 +28,67 @@ public class TransformerMeterRelationDomain implements MybatisEntity {
 	private Byte status;// 状态 STATUS smallint FALSE FALSE FALSE
 
 	private Byte isPubType; // 公用变标志
+	
+	private Integer loadChangeSign;
+	private String meterNo;
+	private String meterName;
+	private String userName;
+	
+	private String transformerNo;
+	private String deskName;
+	
+
+	public Integer getLoadChangeSign() {
+		return loadChangeSign;
+	}
+
+	public void setLoadChangeSign(Integer loadChangeSign) {
+		this.loadChangeSign = loadChangeSign;
+	}
+
+	public String getMeterNo() {
+		return meterNo;
+	}
+
+	public void setMeterNo(String meterNo) {
+		this.meterNo = meterNo;
+	}
+
+	public String getMeterName() {
+		return meterName;
+	}
+
+	public void setMeterName(String meterName) {
+		this.meterName = meterName;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getTransformerNo() {
+		return transformerNo;
+	}
+
+	public void setTransformerNo(String transformerNo) {
+		this.transformerNo = transformerNo;
+	}
+
+	public String getDeskName() {
+		return deskName;
+	}
+
+	public void setDeskName(String deskName) {
+		this.deskName = deskName;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
+	}
 
 	public String get_id() {
 		return _id;

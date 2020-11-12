@@ -7,6 +7,7 @@ package org.fms.cfs.common.webapp.domain;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import org.fms.cfs.common.utils.MongoUtils;
 
@@ -49,7 +50,34 @@ public class UserDomain extends Page implements MybatisEntity {
 	private Date createDate;// 创建日期 CREATE_DATE datetime FALSE FALSE FALSE
 	private String remark;// 备注 REMARK varchar(256) 256 FALSE FALSE FALSE
 	private Byte status;// 客户状态 STATUS smallint FALSE FALSE FALSE
-
+     
+	
+	private String writeSectNo; // 抄表段号
+	private String writeSectName;// 抄表段名称
+	private Byte sectUserType;// 区段用户类型 SECT_USER_TYPE smallint FALSE FALSE FALSE
+	private String customerNo;
+	private String customerName;
+	private String tgName; // 台区名称
+	private String lineCode;
+	private Integer startMon;
+	private Integer endMon;
+	private Date endDate;
+	private List<Long> customerIds;
+	private String type;//类型TYPE varchar(8) 
+	private Long lineId;//线路编码LINE_ID bigint 
+	private String rrioCode;//重要性等级RRIO_CODE varchar(8) 
+	private String transferCode;//转供标志TRANSFER_CODE varchar(8) 
+	private String linkMan;//联系人LINK_MAN varchar(32) 
+	private String tel1;//联系电话1TEL1 varchar(256) 
+	private String tel2;//联系电话2TEL2 varchar(256) 
+	private String vipCode;//重点用户VIP_CODE varchar(8) 
+	private Integer weight;//排序WEIGHT int
+	private Long creatorId;//创建者CREATOR_ID bigint 
+	private Long lastModifierId;//最后修改者LAST_MODIFIER_ID bigint 
+	private String lastModifierTime;//最后修改时间LAST_MODIFIER_TIME varchar(20) 
+	
+	
+	
 	private Byte sn;// 算费次数
 
 	public String get_id() {

@@ -31,10 +31,18 @@ public class MeterMeterAssetsRelDomain implements MybatisEntity {
 
 	// 倍率
 	private BigDecimal factorNum;
+	 //倍率
+    private BigDecimal multiplyingPower;
 	// 状态
 	private Byte status;
 	// 抄表序号
 	private Long writeSn;
+	  private Integer meterSn;
+
+	    private String meterAssetsNo;
+	    
+	    private String userNo;
+
 
 	public Long get_id() {
 		return _id;
@@ -139,4 +147,37 @@ public class MeterMeterAssetsRelDomain implements MybatisEntity {
 	public void setWriteSn(Long writeSn) {
 		this.writeSn = writeSn;
 	}
+
+	public BigDecimal getMultiplyingPower() {
+		return multiplyingPower;
+	}
+
+	public void setMultiplyingPower(BigDecimal multiplyingPower) {
+		this.multiplyingPower = multiplyingPower;
+	}
+
+	public Integer getMeterSn() {
+		return meterSn;
+	}
+
+	public void setMeterSn(Integer meterSn) {
+		this.meterSn = meterSn;
+	}
+
+	public String getMeterAssetsNo() {
+		return meterAssetsNo;
+	}
+
+	public void setMeterAssetsNo(String meterAssetsNo) {
+		this.meterAssetsNo = meterAssetsNo;
+	}
+
+	public String getUserNo() {
+		return userNo;
+	}
+
+	public void setUserNo(String userNo) {
+		this.userNo = userNo;
+	}
+	
 }
