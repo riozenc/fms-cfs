@@ -7,6 +7,7 @@
 package org.fms.cfs.common.config;
 
 public class FixedParametersConfig {
+
 	public static final int OPERATE_TYPE_INSTALL = 1;
 	public static final int OPERATE_TYPE_DISMANTLE = 2;
 

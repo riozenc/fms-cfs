@@ -32,7 +32,7 @@ import org.fms.cfs.common.model.exchange.CFModelExchange;
 import org.fms.cfs.common.utils.MongoUtils;
 import org.fms.cfs.common.webapp.domain.CommonParamDomain;
 import org.fms.cfs.common.webapp.domain.MeterDomain;
-import org.fms.cfs.common.webapp.domain.MeterMeterAssetsRelDomain;
+import org.fms.cfs.common.webapp.domain.MeterMpedRelDomain;
 import org.fms.cfs.common.webapp.domain.MeterRelationDomain;
 import org.fms.cfs.common.webapp.domain.MeterRelationGraphDomain;
 import org.fms.cfs.common.webapp.domain.PriceExecutionDomain;
@@ -414,16 +414,16 @@ public class IntegrityCheckFilter implements EcfFilter, MongoDAOSupport {
 				}, CommonParamDomain.class);
 
 		// 初始化虚拟表的抄表记录
-		List<MeterMeterAssetsRelDomain> virtualMeterAssetsRelList = findMany(
-				getCollectionName(exchange.getDate().toString(), MongoCollectionConfig.METER_METER_ASSETS_REL.name()),
+		List<MeterMpedRelDomain> virtualMeterMpedRelList = findMany(
+				getCollectionName(exchange.getDate().toString(), MongoCollectionConfig.METER_MPED_REL.name()),
 				new MongoFindFilter() {
 					@Override
 					public Bson filter() {
 						return Filters.and(Filters.eq("functionCode", FixedParametersConfig.FUNCTION_CODE_3),
 								Filters.in("meterId", exchange.getModels().keySet()));// 虚拟表
 					}
-				}, MeterMeterAssetsRelDomain.class);
-		virtualMeterAssetsRelList.forEach(v -> {
+				}, MeterMpedRelDomain.class);
+		virtualMeterMpedRelList.forEach(v -> {
 			ECFModel model = exchange.getModels().get(v.getMeterId());
 			model.initVirtualMeterData(timeSegList);
 		});

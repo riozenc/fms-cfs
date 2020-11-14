@@ -29,6 +29,7 @@ import org.fms.cfs.common.webapp.domain.CommonParamDomain;
 import org.fms.cfs.common.webapp.domain.MeterDomain;
 import org.fms.cfs.common.webapp.domain.MeterInductorAssetsRelDomain;
 import org.fms.cfs.common.webapp.domain.MeterMeterAssetsRelDomain;
+import org.fms.cfs.common.webapp.domain.MeterMpedRelDomain;
 import org.fms.cfs.common.webapp.domain.MeterReplaceDomain;
 import org.fms.cfs.common.webapp.domain.UserDomain;
 import org.fms.cfs.common.webapp.domain.WriteFilesDomain;
@@ -72,15 +73,12 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 		Map<Long, UserDomain> userMap = billingDataInitModel.getUserDomains().parallelStream()
 				.collect(Collectors.toMap(UserDomain::getId, u -> u, (k, v) -> v));
 
-		// 计量点与电能表资产关系
-		List<MeterMeterAssetsRelDomain> meterMeterAssetsRelDomains = billingDataInitModel
-				.getMeterMeterAssetsRelDomains();
-		// 计量点与互感器资产关系
-		List<MeterInductorAssetsRelDomain> meterInductorAssetsRelDomains = billingDataInitModel
-				.getMeterInductorAssetsRelDomains();
+		// 计量点与计费点关系
+		List<MeterMpedRelDomain> meterMpedRelDomains = billingDataInitModel.getMeterMpedRelDomains();
 
 		// 获取时段 TIME_SEG
-		List<CommonParamDomain> timeSegList = findMany(getCollection(date, MongoCollectionConfig.SYSTEM_COMMON.name()),
+		List<CommonParamDomain> timeSegList = findMany(
+				getCollection(getCollectionName(date, MongoCollectionConfig.SYSTEM_COMMON.name())),
 				new MongoFindFilter() {
 					@Override
 					public Bson filter() {
@@ -89,64 +87,59 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 				}, CommonParamDomain.class);
 
 		if (timeSegList.size() == 0) {
-			throw new RuntimeException(date+ "月份的参数表时段维护错误,请检查.");
+			throw new RuntimeException(date + "月份的参数表时段维护错误,请检查.");
 		}
 
 		// functionCode = 3(虚拟表) 剔除虚拟表
-		meterMeterAssetsRelDomains.parallelStream().filter(mma -> mma.getFunctionCode() != 3).forEach(mma -> {
-			MeterDomain meterDomain = meterMap.get(mma.getMeterId());
-			if (meterDomain != null) {
-				if (billingDataInitModel.getSn() <= meterDomain.getCountTimes()) {// 是否多次算费（当前算费次数小于等于应算费次数）
-					UserDomain userDomain = userMap.get(meterDomain.getUserId());
-					if (userDomain != null) {
-						// 根据电能表资产生成抄表记录
-						if (mma.getFunctionCode() == 1) {// 有功
-							writeFilesList.add(createWriteFilesDomain(date, userDomain, meterDomain, mma, (byte) 0));// timeSeg
+		meterMpedRelDomains.parallelStream()
+				.filter(mmr -> FixedParametersConfig.FUNCTION_CODE_3 != mmr.getFunctionCode()).forEach(mmr -> {
+					MeterDomain meterDomain = meterMap.get(mmr.getMeterId());
+					if (meterDomain != null) {
+						if (billingDataInitModel.getSn() <= meterDomain.getCountTimes()) {// 是否多次算费（当前算费次数小于等于应算费次数）
+							UserDomain userDomain = userMap.get(meterDomain.getUserId());
+							if (userDomain != null) {
+								// 根据电能表资产生成抄表记录
+								if (FixedParametersConfig.FUNCTION_CODE_1 == mmr.getFunctionCode()) {// 有功
+									writeFilesList
+											.add(createWriteFilesDomain(date, userDomain, meterDomain, mmr, (byte) 0));// timeSeg
 
 //							是否分时表，分时表额外创建4个对象尖、峰、平、谷
-							if (mma.getTsFlag() != null && mma.getTsFlag() == 1) {
+									if (mmr.getTsFlag() != null
+											&& mmr.getTsFlag() == FixedParametersConfig.TS_METER_FLAG_1) {
 
-								timeSegList.stream().filter(t -> t.getParamKey() != 0).forEach(t -> {
-									writeFilesList.add(createWriteFilesDomain(date, userDomain, meterDomain, mma,
-											t.getParamKey().byteValue()));
-								});
+										timeSegList.stream().filter(t -> t.getParamKey() != 0).forEach(t -> {
+											writeFilesList.add(createWriteFilesDomain(date, userDomain, meterDomain,
+													mmr, t.getParamKey().byteValue()));
+										});
 
-//								writeFilesList
-//										.add(createWriteFilesDomain(date, userDomain, meterDomain, mma, (byte) 1));
-//								writeFilesList
-//										.add(createWriteFilesDomain(date, userDomain, meterDomain, mma, (byte) 2));
-//								writeFilesList
-//										.add(createWriteFilesDomain(date, userDomain, meterDomain, mma, (byte) 3));
-//								writeFilesList
-//										.add(createWriteFilesDomain(date, userDomain, meterDomain, mma, (byte) 4));
+									}
+								} else {
+									// 无功
+									// 是否最后一次算费
+									if (billingDataInitModel.getSn() == meterDomain.getCountTimes()
+											// 判断电能表功能代码和功率方向 | FUNCTION_CODE = 2 代表 无功 | POWER_DIRECTION = 1 代表正向
+											&& (mmr.getFunctionCode() == FixedParametersConfig.FUNCTION_CODE_2)) {
+										writeFilesList.add(
+												createWriteFilesDomain(date, userDomain, meterDomain, mmr, (byte) 0));// 无功
+									}
+								}
+
+							} else {
+								billingDataInitModel.addExecuteResult(meterDomain.getUserId() + "用户ID未找到,请检查!");
 							}
-						} else {
-							// 无功
-							// 是否最后一次算费
-							if (billingDataInitModel.getSn() == meterDomain.getCountTimes()
-									// 判断电能表功能代码和功率方向 | FUNCTION_CODE = 2 代表 无功 | POWER_DIRECTION = 1 代表正向
-									&& (mma.getFunctionCode() == 2)) {
-								writeFilesList
-										.add(createWriteFilesDomain(date, userDomain, meterDomain, mma, (byte) 0));// 无功
-							}
+
 						}
 
 					} else {
-						billingDataInitModel.addExecuteResult(meterDomain.getUserId() + "用户ID未找到,请检查!");
+						billingDataInitModel.addExecuteResult(mmr.getMeterId() + "计量点ID未找到,请检查！");
 					}
-
-				}
-
-			} else {
-				billingDataInitModel.addExecuteResult(mma.getMeterId() + "计量点ID未找到,请检查！");
-			}
-		});
+				});
 
 		Set<Long> meterIds = writeFilesList.stream().map(WriteFilesDomain::getMeterId).collect(Collectors.toSet());// 有效meterId
 
 		// 获取mongo中的已抄数据
 		List<WriteFilesDomain> oldWriteFilesList = findMany(
-				getCollection(date, MongoCollectionConfig.WRITE_FILES.name()), new MongoFindFilter() {
+				getCollection(getCollectionName(date, MongoCollectionConfig.WRITE_FILES.name())), new MongoFindFilter() {
 					@Override
 					public Bson filter() {
 						return Filters.and(Filters.eq("writeFlag", 1), Filters.in("meterId", meterIds));
@@ -181,7 +174,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 	}
 
 	private WriteFilesDomain createWriteFilesDomain(String date, UserDomain userDomain, MeterDomain meterDomain,
-			MeterMeterAssetsRelDomain meterMeterAssetsRelDomain, byte timeSeg) {
+			MeterMpedRelDomain meterMpedRelDomain, byte timeSeg) {
 
 		WriteFilesDomain writeFilesDomain = new WriteFilesDomain();
 		writeFilesDomain.setMeterId(meterDomain.getId());
@@ -200,11 +193,11 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 		writeFilesDomain.setWriteSectionId(userDomain.getWriteSectId());
 		writeFilesDomain.setBusinessPlaceCode(userDomain.getBusinessPlaceCode());
 
-		writeFilesDomain.setMeterAssetsId(meterMeterAssetsRelDomain.getMeterAssetsId());// 电能表资产ID
-		writeFilesDomain.setPhaseSeq(meterMeterAssetsRelDomain.getPhaseSeq());// 相序
-		writeFilesDomain.setFunctionCode(meterMeterAssetsRelDomain.getFunctionCode());// 功能代码
-		writeFilesDomain.setPowerDirection(meterMeterAssetsRelDomain.getPowerDirection());// 功率方向
-		writeFilesDomain.setFactorNum(meterMeterAssetsRelDomain.getFactorNum());// 倍率
+		writeFilesDomain.setMpedId(meterMpedRelDomain.getMpedId());// 电能表资产ID
+		writeFilesDomain.setPhaseSeq(meterMpedRelDomain.getPhaseSeq());// 相序
+		writeFilesDomain.setFunctionCode(meterMpedRelDomain.getFunctionCode());// 功能代码
+		writeFilesDomain.setPowerDirection(meterMpedRelDomain.getPowerDirection());// 功率方向
+		writeFilesDomain.setFactorNum(meterMpedRelDomain.getFactorNum());// 倍率
 
 		writeFilesDomain.setUserNo(userDomain.getUserNo());
 		writeFilesDomain.setUserName(userDomain.getUserName());
@@ -218,7 +211,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 
 		// 获取上月抄表记录
 		Map<String, WriteFilesDomain> lastWriteFilesDomains = findMany(
-				getCollection(MonUtils.getLastMon(date), MongoCollectionConfig.WRITE_FILES.name()),
+				getCollection(getCollectionName(MonUtils.getLastMon(date), MongoCollectionConfig.WRITE_FILES.name())),
 				new MongoFindFilter() {
 					@Override
 					public Bson filter() {
@@ -255,7 +248,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 	// TODO
 	private void meterChange(String date, List<WriteFilesDomain> writeFilesList) {
 		Map<Long, List<MeterReplaceDomain>> meterReplaceMap = findMany(
-				getCollectionName(date, MongoCollectionConfig.ELECTRIC_METER_REPLACE.name()), new MongoFindFilter() {
+				getCollectionName(date, MongoCollectionConfig.S_DEV_IR.name()), new MongoFindFilter() {
 					@Override
 					public Bson filter() {
 						return Filters.in("meterId",
@@ -303,7 +296,6 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 							case 110:// 正向有功总
 								w.setStartNum(mr.getP1r0() == null ? BigDecimal.ZERO : mr.getP1r0());
 								break;
-
 							case 111:// 正向有功峰
 								w.setStartNum(mr.getP1r1() == null ? BigDecimal.ZERO : mr.getP1r1());
 								break;

@@ -9,10 +9,9 @@ package org.fms.cfs.common.model;
 import java.util.List;
 
 import org.fms.cfs.common.webapp.domain.MeterDomain;
-import org.fms.cfs.common.webapp.domain.MeterInductorAssetsRelDomain;
-import org.fms.cfs.common.webapp.domain.MeterMeterAssetsRelDomain;
+import org.fms.cfs.common.webapp.domain.MeterMpedRelDomain;
 import org.fms.cfs.common.webapp.domain.MeterRelationDomain;
-import org.fms.cfs.common.webapp.domain.MeterReplaceDomain;
+import org.fms.cfs.common.webapp.domain.SDevIrDomain;
 import org.fms.cfs.common.webapp.domain.SettlementMeterRelDomain;
 import org.fms.cfs.common.webapp.domain.TransformerDomain;
 import org.fms.cfs.common.webapp.domain.TransformerLoadParamDomain;
@@ -26,11 +25,11 @@ public class BillingDataInitModel extends InitModel {
 	private List<UserDomain> userDomains;
 	private List<MeterDomain> meterDomains;
 	private List<MeterRelationDomain> meterRelationDomains;// 计量点关系
-	private List<MeterReplaceDomain> meterReplaceDomains;// 计量点 换边记录
+	private List<SDevIrDomain> sDevIrDomains;// 计量点 换边记录
 	private List<TransformerDomain> transformerDomains;// 变压器信息
 	private List<TransformerMeterRelationDomain> transformerMeterRelationDomains;// 变压器与计量点关系
-	private List<MeterMeterAssetsRelDomain> meterMeterAssetsRelDomains;// 计量点与电能表资产关系
-	private List<MeterInductorAssetsRelDomain> meterInductorAssetsRelDomains;// 计量点与互感器资产关系
+	private List<MeterMpedRelDomain> meterMpedRelDomains;// 计量点与计费点关系
+
 	private List<TransformerLossFormulaParamDomain> transformerLossFormulaParamDomains;
 	private List<TransformerLossTableParamDomain> transformerLossTableParamDomains;
 	private List<TransformerLoadParamDomain> transformerLoadParamDomains;
@@ -71,12 +70,12 @@ public class BillingDataInitModel extends InitModel {
 		this.meterRelationDomains = meterRelationDomains;
 	}
 
-	public List<MeterReplaceDomain> getMeterReplaceDomains() {
-		return meterReplaceDomains;
+	public List<SDevIrDomain> getsDevIrDomains() {
+		return sDevIrDomains;
 	}
 
-	public void setMeterReplaceDomains(List<MeterReplaceDomain> meterReplaceDomains) {
-		this.meterReplaceDomains = meterReplaceDomains;
+	public void setsDevIrDomains(List<SDevIrDomain> sDevIrDomains) {
+		this.sDevIrDomains = sDevIrDomains;
 	}
 
 	public List<TransformerDomain> getTransformerDomains() {
@@ -112,20 +111,12 @@ public class BillingDataInitModel extends InitModel {
 		this.sn = sn;
 	}
 
-	public List<MeterMeterAssetsRelDomain> getMeterMeterAssetsRelDomains() {
-		return meterMeterAssetsRelDomains;
+	public List<MeterMpedRelDomain> getMeterMpedRelDomains() {
+		return meterMpedRelDomains;
 	}
 
-	public void setMeterMeterAssetsRelDomains(List<MeterMeterAssetsRelDomain> meterMeterAssetsRelDomains) {
-		this.meterMeterAssetsRelDomains = meterMeterAssetsRelDomains;
-	}
-
-	public List<MeterInductorAssetsRelDomain> getMeterInductorAssetsRelDomains() {
-		return meterInductorAssetsRelDomains;
-	}
-
-	public void setMeterInductorAssetsRelDomains(List<MeterInductorAssetsRelDomain> meterInductorAssetsRelDomains) {
-		this.meterInductorAssetsRelDomains = meterInductorAssetsRelDomains;
+	public void setMeterMpedRelDomains(List<MeterMpedRelDomain> meterMpedRelDomains) {
+		this.meterMpedRelDomains = meterMpedRelDomains;
 	}
 
 	public List<TransformerLossFormulaParamDomain> getTransformerLossFormulaParamDomains() {

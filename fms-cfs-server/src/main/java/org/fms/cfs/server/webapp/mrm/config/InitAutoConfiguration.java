@@ -13,9 +13,8 @@ import org.fms.cfs.server.webapp.mrm.filter.SystemInitFilter;
 import org.fms.cfs.server.webapp.mrm.filter.datainit.ArchivesInitFilter;
 import org.fms.cfs.server.webapp.mrm.filter.datainit.BemChangeInitFilter;
 import org.fms.cfs.server.webapp.mrm.filter.datainit.InitedFilter;
-import org.fms.cfs.server.webapp.mrm.filter.datainit.MeterInductorAssetsRelationInitFilter;
 import org.fms.cfs.server.webapp.mrm.filter.datainit.MeterInitFilter;
-import org.fms.cfs.server.webapp.mrm.filter.datainit.MeterMeterAssetsRelationInitFilter;
+import org.fms.cfs.server.webapp.mrm.filter.datainit.MeterMpedRelationFilter;
 import org.fms.cfs.server.webapp.mrm.filter.datainit.MeterRelationInitFilter;
 import org.fms.cfs.server.webapp.mrm.filter.datainit.SettlementMeterRelInitFilter;
 import org.fms.cfs.server.webapp.mrm.filter.datainit.TransformerInitFilter;
@@ -96,13 +95,8 @@ public class InitAutoConfiguration {
 	}
 
 	@Bean
-	public BillingDataInitFilter meterMeterAssetsRelationInitFilter() {
-		return new MeterMeterAssetsRelationInitFilter();
-	}
-
-	@Bean
-	public BillingDataInitFilter meterInductorAssetsRelationInitFilter() {
-		return new MeterInductorAssetsRelationInitFilter();
+	public BillingDataInitFilter meterMpedRelationFilter() {
+		return new MeterMpedRelationFilter();
 	}
 
 	@Bean

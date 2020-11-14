@@ -21,7 +21,7 @@ public class WriteFilesDomain implements MybatisEntity {
 	private String _id;
 	private Long id;// ID ID bigint TRUE FALSE TRUE
 	private Long meterId;// 计量点ID METER_ID bigint FALSE FALSE FALSE
-	private Long meterAssetsId;// 资产ID
+	private Long mpedId;// 计量点ID
 	private Integer mon;// 月份
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date initDate;// 初始化时间 INIT_DATE datetime FALSE FALSE FALSE
@@ -342,12 +342,12 @@ public class WriteFilesDomain implements MybatisEntity {
 		this.businessPlaceCode = businessPlaceCode;
 	}
 
-	public Long getMeterAssetsId() {
-		return meterAssetsId;
+	public Long getMpedId() {
+		return mpedId;
 	}
 
-	public void setMeterAssetsId(Long meterAssetsId) {
-		this.meterAssetsId = meterAssetsId;
+	public void setMpedId(Long mpedId) {
+		this.mpedId = mpedId;
 	}
 
 	public BigDecimal getFactorNum() {

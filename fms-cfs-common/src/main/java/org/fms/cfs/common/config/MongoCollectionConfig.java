@@ -16,11 +16,11 @@ public enum MongoCollectionConfig {
 
 	ELECTRIC_METER, // 电计量点
 	ELECTRIC_METER_REL, // 电计量点套扣关系表
-	ELECTRIC_METER_REPLACE, // 电计量点换表记录
+	S_DEV_IR, // 计量点换表记录
 
 	ELECTRIC_METER_MONEY, // 电计量点电费明细表***
 
-	METER_METER_ASSETS_REL, // 计量点与电能表关系表
+	METER_MPED_REL, // 计量点与计费点关系表
 	METER_INDUCTOR_ASSETS_REL, // 计量点与互感器关系表
 	SETTLEMENT_METER_REL, // 结算户与计量点关系表
 
