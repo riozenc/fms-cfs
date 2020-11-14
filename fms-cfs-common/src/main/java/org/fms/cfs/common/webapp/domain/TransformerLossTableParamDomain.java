@@ -29,6 +29,62 @@ public class TransformerLossTableParamDomain {
 
 	private Byte status;//
 
+	private Byte transformerType;// 变压器型号
+	private Byte voltLevelType; // 电压等级
+	private BigDecimal powerLowerLimit;// 电量下限
+	private BigDecimal powerUpperLimit;// 电量上限
+	private BigDecimal activeTransformerLoss;// 有功变损
+	private BigDecimal reactiveTransformerLoss;// 无功变损
+	
+	
+	public Byte getTransformerType() {
+		return transformerType;
+	}
+
+	public void setTransformerType(Byte transformerType) {
+		this.transformerType = transformerType;
+	}
+
+	public Byte getVoltLevelType() {
+		return voltLevelType;
+	}
+
+	public void setVoltLevelType(Byte voltLevelType) {
+		this.voltLevelType = voltLevelType;
+	}
+
+	public BigDecimal getPowerLowerLimit() {
+		return powerLowerLimit;
+	}
+
+	public void setPowerLowerLimit(BigDecimal powerLowerLimit) {
+		this.powerLowerLimit = powerLowerLimit;
+	}
+
+	public BigDecimal getPowerUpperLimit() {
+		return powerUpperLimit;
+	}
+
+	public void setPowerUpperLimit(BigDecimal powerUpperLimit) {
+		this.powerUpperLimit = powerUpperLimit;
+	}
+
+	public BigDecimal getActiveTransformerLoss() {
+		return activeTransformerLoss;
+	}
+
+	public void setActiveTransformerLoss(BigDecimal activeTransformerLoss) {
+		this.activeTransformerLoss = activeTransformerLoss;
+	}
+
+	public BigDecimal getReactiveTransformerLoss() {
+		return reactiveTransformerLoss;
+	}
+
+	public void setReactiveTransformerLoss(BigDecimal reactiveTransformerLoss) {
+		this.reactiveTransformerLoss = reactiveTransformerLoss;
+	}
+
 	public Long getId() {
 		return id;
 	}

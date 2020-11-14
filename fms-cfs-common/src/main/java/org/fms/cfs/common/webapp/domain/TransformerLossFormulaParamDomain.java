@@ -27,11 +27,30 @@ public class TransformerLossFormulaParamDomain {
 	private BigDecimal impedance;// 阻抗
 
 	private BigDecimal emptyCurrent;// 空载电流 EMPTY_CURRENT decimal(8,2) 8 2 FALSE FALSE FALSE
-
+	private BigDecimal loadLoss;// 负载损耗
+	private BigDecimal loadVoltage;// 负载电压
 	private Long operator;// 操作人 OPERATOR bigint FALSE FALSE FALSE
 	private Date datetime;// 操作时间 OPERATION_DATE datetime FALSE FALSE FALSE
 	private String remark;// 备注 REMARK varchar(256) 256 FALSE FALSE FALSE
 	private Byte status;// 状态 STATUS smallint FALSE FALSE FALSE
+
+	
+	
+	public BigDecimal getLoadLoss() {
+		return loadLoss;
+	}
+
+	public void setLoadLoss(BigDecimal loadLoss) {
+		this.loadLoss = loadLoss;
+	}
+
+	public BigDecimal getLoadVoltage() {
+		return loadVoltage;
+	}
+
+	public void setLoadVoltage(BigDecimal loadVoltage) {
+		this.loadVoltage = loadVoltage;
+	}
 
 	public Long getId() {
 		return id;
