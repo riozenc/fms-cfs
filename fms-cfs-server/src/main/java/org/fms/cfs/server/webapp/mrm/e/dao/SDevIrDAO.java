@@ -63,27 +63,26 @@ public class SDevIrDAO extends AbstractTransactionDAOSupport implements MongoDAO
 		return getPersistanceManager().find(getNamespace() + ".findByWriteSect", writeSectIds);
 	}
 
-	public long initialize(String date, List<MeterReplaceDomain> meterReplaceDomains) {
+	public long initialize(String date, List<SDevIrDomain> meterReplaceDomains) {
 		MongoTemplate mongoTemplate = getMongoTemplate();
-		mongoTemplate.getCollection(getCollectionName(date, MongoCollectionConfig.ELECTRIC_METER_REPLACE.name()))
+		mongoTemplate.getCollection(getCollectionName(date, MongoCollectionConfig.S_DEV_IR.name()))
 				.drop();
-		mongoTemplate.getCollection(getCollectionName(date, MongoCollectionConfig.ELECTRIC_METER_REPLACE.name()))
+		mongoTemplate.getCollection(getCollectionName(date, MongoCollectionConfig.S_DEV_IR.name()))
 				.insertMany(toDocuments(meterReplaceDomains));// 参数批量入库
-		return mongoTemplate.getCollection(getCollectionName(date, MongoCollectionConfig.ELECTRIC_METER_REPLACE.name()))
+		return mongoTemplate.getCollection(getCollectionName(date, MongoCollectionConfig.S_DEV_IR.name()))
 				.countDocuments();
 	}
 
-	public long initializeMany(String date, List<MeterReplaceDomain> meterReplaceDomains) {
+	public long initializeMany(String date, List<SDevIrDomain> meterReplaceDomains) {
 		MongoTemplate mongoTemplate = getMongoTemplate();
 		List<WriteModel<Document>> requests = updateMany(toDocuments(meterReplaceDomains), new MongoUpdateFilter() {
 			@Override
 			public Bson filter(Document param) {
-				// TODO Auto-generated method stub
 				return Filters.eq("id", param.get("id"));
 			}
 		}, true);
 		BulkWriteResult bulkWriteResult = mongoTemplate
-				.getCollection(getCollectionName(date, MongoCollectionConfig.ELECTRIC_METER_REPLACE.name()))
+				.getCollection(getCollectionName(date, MongoCollectionConfig.S_DEV_IR.name()))
 				.bulkWrite(requests);
 		return bulkWriteResult.getModifiedCount();
 	}

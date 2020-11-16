@@ -27,10 +27,10 @@ import org.fms.cfs.common.model.exchange.InitModelExchange;
 import org.fms.cfs.common.utils.MonUtils;
 import org.fms.cfs.common.webapp.domain.CommonParamDomain;
 import org.fms.cfs.common.webapp.domain.MeterDomain;
-import org.fms.cfs.common.webapp.domain.MeterInductorAssetsRelDomain;
-import org.fms.cfs.common.webapp.domain.MeterMeterAssetsRelDomain;
+
 import org.fms.cfs.common.webapp.domain.MeterMpedRelDomain;
-import org.fms.cfs.common.webapp.domain.MeterReplaceDomain;
+
+import org.fms.cfs.common.webapp.domain.SDevIrDomain;
 import org.fms.cfs.common.webapp.domain.UserDomain;
 import org.fms.cfs.common.webapp.domain.WriteFilesDomain;
 import org.fms.cfs.server.webapp.mrm.filter.BillingDataInitFilter;
@@ -139,7 +139,8 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 
 		// 获取mongo中的已抄数据
 		List<WriteFilesDomain> oldWriteFilesList = findMany(
-				getCollection(getCollectionName(date, MongoCollectionConfig.WRITE_FILES.name())), new MongoFindFilter() {
+				getCollection(getCollectionName(date, MongoCollectionConfig.WRITE_FILES.name())),
+				new MongoFindFilter() {
 					@Override
 					public Bson filter() {
 						return Filters.and(Filters.eq("writeFlag", 1), Filters.in("meterId", meterIds));
@@ -247,37 +248,37 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 
 	// TODO
 	private void meterChange(String date, List<WriteFilesDomain> writeFilesList) {
-		Map<Long, List<MeterReplaceDomain>> meterReplaceMap = findMany(
+		Map<Long, List<SDevIrDomain>> sDevIrMap = findMany(
 				getCollectionName(date, MongoCollectionConfig.S_DEV_IR.name()), new MongoFindFilter() {
 					@Override
 					public Bson filter() {
-						return Filters.in("meterId",
+						return Filters.in("mpedId",
 								writeFilesList.stream().map(WriteFilesDomain::getMeterId).collect(Collectors.toList()));
 					}
-				}, MeterReplaceDomain.class).stream().collect(Collectors.groupingBy(MeterReplaceDomain::getMeterId));
+				}, SDevIrDomain.class).stream().collect(Collectors.groupingBy(SDevIrDomain::getMpedId));
 
 		Map<Long, List<WriteFilesDomain>> writeFilesMap = writeFilesList.stream()
 				.collect(Collectors.groupingBy(WriteFilesDomain::getMeterId));
 
-		meterReplaceMap.forEach((meterId, list) -> {// list 获取最新的换表记录
+		sDevIrMap.forEach((mpedId, list) -> {// list 获取最新的换表记录
 
-			List<WriteFilesDomain> writeFilesDomains = writeFilesMap.get(meterId);
+			List<WriteFilesDomain> writeFilesDomains = writeFilesMap.get(mpedId);
 
 			Date minDate = writeFilesDomains.stream().map(WriteFilesDomain::getLastWriteDate)
 					.filter(lastWriteDate -> null != lastWriteDate).min((a, b) -> a.compareTo(b)).orElse(null);
 
 			// OPERATE_TYPE = 1 装表
-			Map<String, MeterReplaceDomain> installMap = list.stream().filter(mr -> {
+			Map<String, SDevIrDomain> installMap = list.stream().filter(mr -> {
 				if (minDate == null) {
 					return true;
 				} else {
-					return mr.getReplaceDate().after(minDate);
+					return mr.getIrDate().after(minDate);
 				}
-			}).filter(mr -> mr.getOperateType() == FixedParametersConfig.OPERATE_TYPE_INSTALL)
-					.sorted(Comparator.comparing(MeterReplaceDomain::getCreateDate)).collect(Collectors.toMap(mr -> {
-						return mr.getPowerDirection() + "#" + mr.getFunctionCode();
+			}).filter(mr -> mr.getTypeCode() == FixedParametersConfig.OPERATE_TYPE_INSTALL)
+					.sorted(Comparator.comparing(SDevIrDomain::getCreateDate)).collect(Collectors.toMap(mr -> {
+						return mr.getiDirection() + "#" + mr.getFunctionCode();
 					}, k -> k, (k, v) -> {
-						if (k.getReplaceDate().after(v.getReplaceDate())) {
+						if (k.getIrDate().after(v.getIrDate())) {
 							return k;
 						} else {
 							return v;
@@ -289,10 +290,10 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 				// 电能表
 				writeFilesDomains.stream()
 
-						.filter(w -> w.getMeterAssetsId().compareTo(mr.getMeterAssetsId()) == 0)
+						.filter(w -> w.getMeterAssetsId().compareTo(mr.getMeterAssetNo()) == 0)
 						.filter(w -> w.getFunctionCode().compareTo(mr.getFunctionCode()) == 0)
-						.filter(w -> w.getPowerDirection().compareTo(mr.getPowerDirection()) == 0).forEach(w -> {
-							switch (mr.getPowerDirection() * 100 + mr.getFunctionCode() * 10 + w.getTimeSeg()) {
+						.filter(w -> w.getPowerDirection().compareTo(mr.getiDirection()) == 0).forEach(w -> {
+							switch (mr.getiDirection() * 100 + mr.getFunctionCode() * 10 + w.getTimeSeg()) {
 							case 110:// 正向有功总
 								w.setStartNum(mr.getP1r0() == null ? BigDecimal.ZERO : mr.getP1r0());
 								break;
@@ -325,7 +326,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 			});
 
 			// OPERATE_TYPE = 2 拆表。只有拆表的时候才有换表电量
-			Map<String, List<MeterReplaceDomain>> dismantleStream = list.stream()
+			Map<String, List<SDevIrDomain>> dismantleStream = list.stream()
 					.filter(mr -> mr.getOperateType() == FixedParametersConfig.OPERATE_TYPE_DISMANTLE)
 					.filter(mr -> mr.getEquipmentType() == FixedParametersConfig.EQUIPMENT_TYPE_1)
 					.collect(Collectors.groupingBy(mr -> {
@@ -338,7 +339,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 					return key.equals(pf);
 				}).forEach(w -> {
 					BigDecimal changePower = dismantleList.stream().filter(d -> d.getP5r0() != null)
-							.map(MeterReplaceDomain::getP5r0).reduce(BigDecimal.ZERO, BigDecimal::add);
+							.map(SDevIrDomain::getP5r0).reduce(BigDecimal.ZERO, BigDecimal::add);
 					w.addChgPower(changePower);
 				});
 

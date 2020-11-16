@@ -22,7 +22,7 @@ public class SDevIrDomain implements MybatisEntity {
 	public Long mpedId; // 测量点标识
 	public String equipTypeCode; // 设备类别
 	public Long equipId; // 设备标识
-	private String typeCode; // 装拆类别
+	private Byte typeCode; // 装拆类别
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	private Date irDate; // 装拆日期
 	private String empNo; // 装拆人员
@@ -40,7 +40,8 @@ public class SDevIrDomain implements MybatisEntity {
 	private String tvRatio; // TV变比
 	private BigDecimal tvValue; // TV值
 	private BigDecimal tFactor; // 倍率
-	private String iDirection; // 装表方向
+	private Byte iDirection; // 装表方向
+	private Byte functionCode; // 功能代码
 	private String meterNo; // 表号
 	private Long coef; // 采集系数
 	private BigDecimal p1r0; // 正向有功总 P1R0 decimal(14,4)
@@ -102,8 +103,7 @@ public class SDevIrDomain implements MybatisEntity {
 	private String meterAssetId;// 表计资产标识
 	private String tvAssetId; // TV资产标识
 	private String taAssetId; // TA资产标识
-	
-	
+
 	public Long get_id() {
 		return _id;
 	}
@@ -144,11 +144,11 @@ public class SDevIrDomain implements MybatisEntity {
 		this.equipId = equipId;
 	}
 
-	public String getTypeCode() {
+	public Byte getTypeCode() {
 		return typeCode;
 	}
 
-	public void setTypeCode(String typeCode) {
+	public void setTypeCode(Byte typeCode) {
 		this.typeCode = typeCode;
 	}
 
@@ -280,11 +280,11 @@ public class SDevIrDomain implements MybatisEntity {
 		this.tFactor = tFactor;
 	}
 
-	public String getiDirection() {
+	public Byte getiDirection() {
 		return iDirection;
 	}
 
-	public void setiDirection(String iDirection) {
+	public void setiDirection(Byte iDirection) {
 		this.iDirection = iDirection;
 	}
 
@@ -766,6 +766,14 @@ public class SDevIrDomain implements MybatisEntity {
 
 	public void setTaAssetId(String taAssetId) {
 		this.taAssetId = taAssetId;
+	}
+
+	public Byte getFunctionCode() {
+		return functionCode;
+	}
+
+	public void setFunctionCode(Byte functionCode) {
+		this.functionCode = functionCode;
 	}
 
 }

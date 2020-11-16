@@ -15,7 +15,7 @@ import org.fms.cfs.common.config.MongoCollectionConfig;
 import org.fms.cfs.common.model.BillingDataInitModel;
 import org.fms.cfs.common.model.exchange.InitModelExchange;
 import org.fms.cfs.common.webapp.domain.MeterDomain;
-import org.fms.cfs.common.webapp.domain.MeterReplaceDomain;
+import org.fms.cfs.common.webapp.domain.SDevIrDomain;
 import org.fms.cfs.server.webapp.mrm.filter.BillingDataInitFilter;
 import org.fms.cfs.server.webapp.mrm.filter.InitFilterChain;
 
@@ -36,11 +36,9 @@ public class BemChangeInitFilter implements BillingDataInitFilter, MongoDAOSuppo
 
 	@Override
 	public Mono<Void> filter(InitModelExchange exchange, InitFilterChain filterChain) {
-		// TODO Auto-generated method stub
 		BillingDataInitModel billingDataInitModel = (BillingDataInitModel) exchange.getModel();
 
-		deleteMany(
-				getCollectionName(billingDataInitModel.getDate(), MongoCollectionConfig.ELECTRIC_METER_REPLACE.name()),
+		deleteMany(getCollectionName(billingDataInitModel.getDate(), MongoCollectionConfig.S_DEV_IR.name()),
 				new MongoDeleteFilter() {
 
 					@Override
@@ -52,11 +50,11 @@ public class BemChangeInitFilter implements BillingDataInitFilter, MongoDAOSuppo
 
 		// 换表记录
 
-		List<WriteModel<Document>> updateResult = updateMany(toDocuments(billingDataInitModel.getMeterReplaceDomains(),
-				new ToDocumentCallBack<MeterReplaceDomain>() {
+		List<WriteModel<Document>> updateResult = updateMany(
+				toDocuments(billingDataInitModel.getsDevIrDomains(), new ToDocumentCallBack<SDevIrDomain>() {
 
 					@Override
-					public MeterReplaceDomain call(MeterReplaceDomain t) {
+					public SDevIrDomain call(SDevIrDomain t) {
 						t.createObjectId();
 						return t;
 					}
@@ -64,7 +62,6 @@ public class BemChangeInitFilter implements BillingDataInitFilter, MongoDAOSuppo
 				}), new MongoUpdateFilter() {
 					@Override
 					public Bson filter(Document param) {
-						// TODO Auto-generated method stub
 						return Filters.eq("_id", param.get("_id"));
 					}
 				}, true);
@@ -74,15 +71,14 @@ public class BemChangeInitFilter implements BillingDataInitFilter, MongoDAOSuppo
 			return filterChain.filter(exchange);
 		}
 
-		BulkWriteResult bulkWriteResult = getCollection(billingDataInitModel.getDate(),
-				MongoCollectionConfig.ELECTRIC_METER_REPLACE.name()).bulkWrite(updateResult);
+		BulkWriteResult bulkWriteResult = getCollection(getCollectionName(billingDataInitModel.getDate(),
+				MongoCollectionConfig.S_DEV_IR.name())).bulkWrite(updateResult);
 		billingDataInitModel.addExecuteResult("换表记录：" + (updateResult.size() - bulkWriteResult.getModifiedCount()));
 		return filterChain.filter(exchange);
 	}
 
 	@Override
 	public int getOrder() {
-		// TODO Auto-generated method stub
 		return 30;
 	}
 
