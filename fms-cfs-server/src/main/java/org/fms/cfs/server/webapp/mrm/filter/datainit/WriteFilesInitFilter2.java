@@ -327,10 +327,10 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 
 			// OPERATE_TYPE = 2 拆表。只有拆表的时候才有换表电量
 			Map<String, List<SDevIrDomain>> dismantleStream = list.stream()
-					.filter(mr -> mr.getOperateType() == FixedParametersConfig.OPERATE_TYPE_DISMANTLE)
-					.filter(mr -> mr.getEquipmentType() == FixedParametersConfig.EQUIPMENT_TYPE_1)
+					.filter(mr -> mr.getTypeCode() == FixedParametersConfig.OPERATE_TYPE_DISMANTLE)
+					.filter(mr -> mr.getEquipTypeCode() == FixedParametersConfig.EQUIPMENT_TYPE_1)
 					.collect(Collectors.groupingBy(mr -> {
-						return mr.getPowerDirection() + "#" + mr.getFunctionCode();
+						return mr.getiDirection() + "#" + mr.getFunctionCode();
 					}));
 
 			dismantleStream.forEach((key, dismantleList) -> {

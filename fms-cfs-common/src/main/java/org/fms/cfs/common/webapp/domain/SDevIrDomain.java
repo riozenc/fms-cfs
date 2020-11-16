@@ -20,7 +20,7 @@ public class SDevIrDomain implements MybatisEntity {
 	private Long _id;
 	public Long id; // ID ID bigint
 	public Long mpedId; // 测量点标识
-	public String equipTypeCode; // 设备类别
+	public Byte equipTypeCode; // 设备类别
 	public Long equipId; // 设备标识
 	private Byte typeCode; // 装拆类别
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
@@ -128,11 +128,11 @@ public class SDevIrDomain implements MybatisEntity {
 		this.mpedId = mpedId;
 	}
 
-	public String getEquipTypeCode() {
+	public Byte getEquipTypeCode() {
 		return equipTypeCode;
 	}
 
-	public void setEquipTypeCode(String equipTypeCode) {
+	public void setEquipTypeCode(Byte equipTypeCode) {
 		this.equipTypeCode = equipTypeCode;
 	}
 

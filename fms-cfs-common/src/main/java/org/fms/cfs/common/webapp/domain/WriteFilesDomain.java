@@ -57,6 +57,8 @@ public class WriteFilesDomain implements MybatisEntity {
 	private Long userId; // 所属用户 USER_ID bigint
 	private String userName;
 	private String address;// 用电地址
+	
+	private Long mpedId; //计量点ID
 
 	public String get_id() {
 		return _id;
@@ -357,5 +359,15 @@ public class WriteFilesDomain implements MybatisEntity {
 	public void setFactorNum(BigDecimal factorNum) {
 		this.factorNum = factorNum;
 	}
+
+	public Long getMpedId() {
+		return mpedId;
+	}
+
+	public void setMpedId(Long mpedId) {
+		this.mpedId = mpedId;
+	}
+	
+	
 
 }
