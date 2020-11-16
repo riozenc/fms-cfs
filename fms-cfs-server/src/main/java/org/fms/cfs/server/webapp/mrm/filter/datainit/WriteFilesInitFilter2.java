@@ -286,11 +286,9 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 					}));
 
 			installMap.values().forEach(mr -> {
-
 				// 电能表
 				writeFilesDomains.stream()
-
-						.filter(w -> w.getMeterAssetsId().compareTo(mr.getMeterAssetNo()) == 0)
+						.filter(w -> w.getMpedId().compareTo(mr.getMpedId()) == 0)
 						.filter(w -> w.getFunctionCode().compareTo(mr.getFunctionCode()) == 0)
 						.filter(w -> w.getPowerDirection().compareTo(mr.getiDirection()) == 0).forEach(w -> {
 							switch (mr.getiDirection() * 100 + mr.getFunctionCode() * 10 + w.getTimeSeg()) {

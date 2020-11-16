@@ -20,8 +20,8 @@ public class WriteFilesDomain implements MybatisEntity {
 
 	private String _id;
 	private Long id;// ID ID bigint TRUE FALSE TRUE
-	private Long meterId;// 计量点ID
-	private String meterAssetsId;// 资产ID
+	private Long meterId;// 计费点ID
+	private Long mpedId; // 计量点ID
 	private Integer mon;// 月份
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date initDate;// 初始化时间 INIT_DATE datetime FALSE FALSE FALSE
@@ -57,8 +57,6 @@ public class WriteFilesDomain implements MybatisEntity {
 	private Long userId; // 所属用户 USER_ID bigint
 	private String userName;
 	private String address;// 用电地址
-	
-	private Long mpedId; //计量点ID
 
 	public String get_id() {
 		return _id;
@@ -98,14 +96,6 @@ public class WriteFilesDomain implements MybatisEntity {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getMeterAssetsId() {
-		return meterAssetsId;
-	}
-
-	public void setMeterAssetsId(String meterAssetsId) {
-		this.meterAssetsId = meterAssetsId;
 	}
 
 	public Integer getMon() {
@@ -367,7 +357,5 @@ public class WriteFilesDomain implements MybatisEntity {
 	public void setMpedId(Long mpedId) {
 		this.mpedId = mpedId;
 	}
-	
-	
 
 }
