@@ -13,7 +13,6 @@ import org.bson.conversions.Bson;
 import org.fms.cfs.common.config.MongoCollectionConfig;
 import org.fms.cfs.common.model.BillingDataInitModel;
 import org.fms.cfs.common.model.exchange.InitModelExchange;
-import org.fms.cfs.common.webapp.domain.TransformerLoadParamDomain;
 import org.fms.cfs.common.webapp.domain.TransformerLossFormulaParamDomain;
 import org.fms.cfs.common.webapp.domain.TransformerLossTableParamDomain;
 import org.fms.cfs.server.webapp.mrm.filter.BillingDataInitFilter;
@@ -65,23 +64,12 @@ public class TransformerInitFilter implements BillingDataInitFilter, MongoDAOSup
 		BulkWriteResult bulkWriteResult1 = getCollection(billingDataInitModel.getDate(),
 				MongoCollectionConfig.TRANSFORMER_INFO.name()).bulkWrite(transformerMongoList);
 
-		// 负荷
-		List<TransformerLoadParamDomain> transformerLoadParamDomains = billingDataInitModel
-				.getTransformerLoadParamDomains();
 		// 公式
 		List<TransformerLossFormulaParamDomain> transformerLossFormulaParamDomains = billingDataInitModel
 				.getTransformerLossFormulaParamDomains();
 		// 查表
 		List<TransformerLossTableParamDomain> transformerLossTableParamDomains = billingDataInitModel
 				.getTransformerLossTableParamDomains();
-
-		deleteMany(getCollectionName(billingDataInitModel.getDate(),
-				MongoCollectionConfig.TRANSFORMER_LOAD_PARAM_INFO.name()), new MongoDeleteFilter() {
-					@Override
-					public Bson filter() {
-						return new Document();
-					}
-				});
 
 		deleteMany(getCollectionName(billingDataInitModel.getDate(),
 				MongoCollectionConfig.TRANSFORMER_LOSS_FORMULA_PARAM_INFO.name()), new MongoDeleteFilter() {
@@ -99,12 +87,9 @@ public class TransformerInitFilter implements BillingDataInitFilter, MongoDAOSup
 					}
 				});
 
-		List<WriteModel<Document>> insertTLPI = insertMany(toDocuments(transformerLoadParamDomains));
 		List<WriteModel<Document>> insertTLFPI = insertMany(toDocuments(transformerLossFormulaParamDomains));
 		List<WriteModel<Document>> insertTLTPI = insertMany(toDocuments(transformerLossTableParamDomains));
 
-		BulkWriteResult resultTLPI = getCollection(billingDataInitModel.getDate(),
-				MongoCollectionConfig.TRANSFORMER_LOAD_PARAM_INFO.name()).bulkWrite(insertTLPI);
 		BulkWriteResult resultTLFPI = getCollection(billingDataInitModel.getDate(),
 				MongoCollectionConfig.TRANSFORMER_LOSS_FORMULA_PARAM_INFO.name()).bulkWrite(insertTLFPI);
 		BulkWriteResult resultTLTPI = getCollection(billingDataInitModel.getDate(),

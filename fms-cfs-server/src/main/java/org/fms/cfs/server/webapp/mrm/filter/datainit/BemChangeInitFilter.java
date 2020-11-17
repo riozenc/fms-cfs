@@ -48,8 +48,12 @@ public class BemChangeInitFilter implements BillingDataInitFilter, MongoDAOSuppo
 					}
 				});
 
+		if(billingDataInitModel.getsDevIrDomains()==null) {
+			billingDataInitModel.addExecuteResult("换表记录数据为0,请检查.");
+			return filterChain.filter(exchange);
+		}
+		
 		// 换表记录
-
 		List<WriteModel<Document>> updateResult = updateMany(
 				toDocuments(billingDataInitModel.getsDevIrDomains(), new ToDocumentCallBack<SDevIrDomain>() {
 

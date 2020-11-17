@@ -33,7 +33,7 @@ public class BillingDataInitModel extends InitModel {
 	private List<TransformerLossFormulaParamDomain> transformerLossFormulaParamDomains;
 	private List<TransformerLossTableParamDomain> transformerLossTableParamDomains;
 	private List<TransformerLoadParamDomain> transformerLoadParamDomains;
-	private List<SettlementMeterRelDomain> settlementMeterRelDomains;
+	
 
 	private String date;
 	private String errorMessage;
@@ -145,12 +145,6 @@ public class BillingDataInitModel extends InitModel {
 		this.transformerLoadParamDomains = transformerLoadParamDomains;
 	}
 
-	public List<SettlementMeterRelDomain> getSettlementMeterRelDomains() {
-		return settlementMeterRelDomains;
-	}
-
-	public void setSettlementMeterRelDomains(List<SettlementMeterRelDomain> settlementMeterRelDomains) {
-		this.settlementMeterRelDomains = settlementMeterRelDomains;
-	}
+	
 
 }

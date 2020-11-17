@@ -39,7 +39,8 @@ public class MeterMpedRelationFilter implements BillingDataInitFilter, MongoDAOS
 
 		BillingDataInitModel billingDataInitModel = (BillingDataInitModel) exchange.getModel();
 
-		if (billingDataInitModel.getMeterMpedRelDomains().size() == 0) {
+		if (billingDataInitModel.getMeterMpedRelDomains() == null
+				|| billingDataInitModel.getMeterMpedRelDomains().size() == 0) {
 			billingDataInitModel.addExecuteResult("计量点与计费点关系数据为0,请检查计量点与计费点关系数据.");
 			return filterChain.filter(exchange);
 		}

@@ -29,7 +29,7 @@ public enum MongoCollectionConfig {
 
 	TRANSFORMER_LOSS_FORMULA_PARAM_INFO, // 变压器损耗参数表-公式
 	TRANSFORMER_LOSS_TABLE_PARAM_INFO, // 变压器损耗参数表-查表
-	TRANSFORMER_LOAD_PARAM_INFO, // 变压器负荷表
+	
 
 	COS_STANDARD_CONFIG, // 电费力率调整表
 

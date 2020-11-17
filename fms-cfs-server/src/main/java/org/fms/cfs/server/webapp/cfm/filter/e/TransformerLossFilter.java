@@ -56,142 +56,162 @@ public class TransformerLossFilter implements EcfFilter, MongoDAOSupport {
 				exchange.getDate().toString());
 
 		// 获取变压器损耗计算参数-查表
-		Map<BigDecimal, List<TransformerLossTableParamDomain>> tableMap = getTransformerLossTableParamDomains(
+		Map<String, List<TransformerLossTableParamDomain>> tableMap = getTransformerLossTableParamDomains(
 				exchange.getDate().toString());
-
-		// 获取负荷表
-		Map<BigDecimal, TransformerLoadParamDomain> loadRatioMap = getLoadDomains(exchange.getDate().toString());
 
 		// msType = 2 代表 高供低计
 		ecfModelMap.values().stream().filter(m -> m.isComplete())
 				.filter(e -> e.getTransformerMeterRelationDomain() != null)
 //				.filter(e -> e.getTransformerMeterRelationDomain().getMsType() == FixedParametersConfig.MS_MODE_2)//高供低计
-				.filter(e -> e.getMeterType() != FixedParametersConfig.METER_TYPE_2)//考核表
+				.filter(e -> e.getMeterType() != FixedParametersConfig.METER_TYPE_2)// 考核表
 				.collect(Collectors.groupingBy(ECFModel::getTransformerCalculateModel))
 				.forEach((transformerCalculateModel, list) -> {
-					// 汇总关联的计量点的信息
-					list.forEach(ecfModel -> {
-						transformerCalculateModel.addActiveEnergy(ecfModel.getActiveEnergy());
-						transformerCalculateModel.addReactiveEnergy(ecfModel.getReactiveEnergy());
-						if (ecfModel.getMeterData().stream()
-								.anyMatch(m -> m.getFunctionCode() == FixedParametersConfig.FUNCTION_CODE_2)) {
-							transformerCalculateModel.setIncludedReactiveMeter(true);
-						}
-					});
-
 					try {
-						switch (transformerCalculateModel.getTransformerLossType()) {
-						case 1:// 不计算
-							transformerCalculateModel.calculateByEmpty();
-							break;
-						case 2:// 查表
+						// 汇总关联的计量点的电量
+						list.stream().filter(ecfModel -> ecfModel.getTransformerLossType() != null)
+								.forEach(ecfModel -> {
+									transformerCalculateModel.addActiveEnergy(ecfModel.getActiveChargePower());
+									transformerCalculateModel.addReactiveEnergy(ecfModel.getReactiveChargePower());
+//							transformerCalculateModel.addActiveEnergy(ecfModel.getActiveEnergy());
+//							transformerCalculateModel.addReactiveEnergy(ecfModel.getReactiveEnergy());
+								});
 
-							transformerCalculateModel.calculateByTable(
-									tableMap.get(transformerCalculateModel.getCapacity()),
-									loadRatioMap.get(transformerCalculateModel.getCapacity()));
+						// 计算损耗
+						try {
+							switch (transformerCalculateModel.getTransformerLossType()) {
+							case 1:// 不计算
+								transformerCalculateModel.calculateByEmpty();
+								break;
+							case 2:// 查表
 
-							break;
-						case 3:// 公式
-							transformerCalculateModel
-									.calculateByFormula(formulaMap.get(transformerCalculateModel.getFormulaKey()));
-							break;
-						default:
-							transformerCalculateModel.calculateByEmpty();
-							break;
+								transformerCalculateModel
+										.calculateByTable(getNearTableParam(tableMap, transformerCalculateModel));
+								break;
+							case 3:// 公式
+								transformerCalculateModel
+										.calculateByFormula(formulaMap.get(transformerCalculateModel.getFormulaKey()));
+								break;
+							default:
+								transformerCalculateModel.calculateByEmpty();
+								break;
+							}
+						} catch (Exception exception) {
+							list.forEach(ecfModel -> {
+								ecfModel.markProcessResult(getOrder(), false);
+								ecfModel.addRemark(
+										transformerCalculateModel.getTableKey() + " 未找到该类型匹配的变损参数-查表，请检查档案或参数表.");
+							});
 						}
-					} catch (Exception exception) {
-						list.forEach(ecfModel -> {
-							ecfModel.markProcessResult(getOrder(), false);
-							ecfModel.addRemark(
-									transformerCalculateModel.getFormulaKey() + " 未找到该类型匹配的变损参数-查表，请检查档案或参数表.");
+
+						BigDecimal[] subActiveTransformerLoss = { BigDecimal.ZERO };
+						BigDecimal[] subReactiveTransformerLoss = { BigDecimal.ZERO };
+						List<Boolean> flag = new LinkedList<>();
+
+						List<ECFModel> newList = list.stream()
+								.filter(e -> e.getMsType() == FixedParametersConfig.MS_MODE_2)
+								.filter(e -> e.getTransformerLossType() != FixedParametersConfig.TRANS_SHARE_FLAG_0)
+								.collect(Collectors.toList());// 剔除不计算的
+
+						newList.forEach(ecfModel -> {
+							if (ecfModel.getActiveChargePower().compareTo(BigDecimal.ZERO) == 0) {
+								flag.add(false);
+							} else {
+								flag.add(true);
+							}
 						});
-					}
 
-					BigDecimal[] subActiveTransformerLoss = { BigDecimal.ZERO };
-					BigDecimal[] subReactiveTransformerLoss = { BigDecimal.ZERO };
-					Boolean[] flag = { true };
+						if (!flag.contains(true)) {
+							newList.stream().forEach(ecfModel -> {
 
-					list.stream().forEach(ecfModel -> {
-						switch (ecfModel.getTransformerLossType()) {
-						case FixedParametersConfig.TRANS_SHARE_FLAG_0://
-							ecfModel.setActiveTransformerLoss(BigDecimal.ZERO);
+								ecfModel.setActiveTransformerLoss(transformerCalculateModel.lossAllocation(
+										transformerCalculateModel.getActiveTransformerLoss(), BigDecimal.ONE,
+										BigDecimal.valueOf(newList.size())));
 
-							ecfModel.setReactiveTransformerLoss(BigDecimal.ZERO);
+								ecfModel.setReactiveTransformerLoss(transformerCalculateModel.lossAllocation(
+										transformerCalculateModel.getReactiveTransformerLoss(), BigDecimal.ONE,
+										BigDecimal.valueOf(newList.size())));
 
-							break;
-						case FixedParametersConfig.TRANS_SHARE_FLAG_1:// 按合同容量分摊
+								transformerCalculateModel.addTransformerLossAllocation(ecfModel.getMeterId(),
+										ecfModel.getMeterNo(), ecfModel.getActiveChargePower(),
+										ecfModel.getTransformerLossType(), ecfModel.getActiveTransformerLoss(),
+										ecfModel.getReactiveTransformerLoss());
 
-							ecfModel.setActiveTransformerLoss(transformerCalculateModel.lossAllocation(
-									transformerCalculateModel.getActiveTransformerLoss(), ecfModel.getCapacity(),
-									transformerCalculateModel.getCapacity()));
+							});
+						} else {
+							BigDecimal activeTotalApportionment = newList.stream().map(ECFModel::getActiveChargePower)
+									.reduce(BigDecimal.ZERO, BigDecimal::add);// 分摊总量
 
-							ecfModel.setReactiveTransformerLoss(transformerCalculateModel.lossAllocation(
-									transformerCalculateModel.getReactiveTransformerLoss(), ecfModel.getCapacity(),
-									transformerCalculateModel.getCapacity()));
+							BigDecimal reactiveTotalApportionment = newList.stream()
+									.map(ECFModel::getReactiveChargePower).reduce(BigDecimal.ZERO, BigDecimal::add);// 分摊总量
 
-							break;
-						case FixedParametersConfig.TRANS_SHARE_FLAG_2:// 按用电量分摊
+							newList.stream().forEach(ecfModel -> {
 
-							ecfModel.setActiveTransformerLoss(transformerCalculateModel.lossAllocation(
-									transformerCalculateModel.getActiveTransformerLoss(),
-									ecfModel.getActiveChargePower(), transformerCalculateModel.getActiveEnergy()));
+								switch (ecfModel.getTransformerLossType()) {
+								case FixedParametersConfig.TRANS_SHARE_FLAG_0://
+									ecfModel.setActiveTransformerLoss(BigDecimal.ZERO);
 
-							ecfModel.setReactiveTransformerLoss(transformerCalculateModel.lossAllocation(
-									transformerCalculateModel.getReactiveTransformerLoss(),
-									ecfModel.getReactiveChargePower(), transformerCalculateModel.getReactiveEnergy()));
+									ecfModel.setReactiveTransformerLoss(BigDecimal.ZERO);
 
-							break;
-						case FixedParametersConfig.TRANS_SHARE_FLAG_3:// 固定变损
+									break;
+								case FixedParametersConfig.TRANS_SHARE_FLAG_1:// 按合同容量分摊
 
-							ecfModel.setActiveTransformerLoss(
-									ecfModel.getTransformerMeterRelationDomain().getTransLostNum());
+									ecfModel.setActiveTransformerLoss(transformerCalculateModel.lossAllocation(
+											transformerCalculateModel.getActiveTransformerLoss(),
+											ecfModel.getCapacity(), transformerCalculateModel.getCapacity()));
 
-							ecfModel.setReactiveTransformerLoss(
-									ecfModel.getTransformerMeterRelationDomain().getTransLostNum());
-							flag[0] = false;
+									ecfModel.setReactiveTransformerLoss(transformerCalculateModel.lossAllocation(
+											transformerCalculateModel.getReactiveTransformerLoss(),
+											ecfModel.getCapacity(), transformerCalculateModel.getCapacity()));
 
-							break;
-						case FixedParametersConfig.TRANS_SHARE_FLAG_4:// 参与分摊但不计算变损
+									break;
+								case FixedParametersConfig.TRANS_SHARE_FLAG_2:// 按用电量分摊
 
-							ecfModel.setActiveTransformerLoss(BigDecimal.ZERO);
+									ecfModel.setActiveTransformerLoss(transformerCalculateModel.lossAllocation(
+											transformerCalculateModel.getActiveTransformerLoss(),
+											ecfModel.getActiveChargePower(), activeTotalApportionment));
 
-							ecfModel.setReactiveTransformerLoss(BigDecimal.ZERO);
-							flag[0] = false;
+									ecfModel.setReactiveTransformerLoss(transformerCalculateModel.lossAllocation(
+											transformerCalculateModel.getReactiveTransformerLoss(),
+											ecfModel.getReactiveChargePower(), reactiveTotalApportionment));
 
-							break;
-						default:
-							break;
+									break;
+								case FixedParametersConfig.TRANS_SHARE_FLAG_3:// 固定变损
+
+									if (ecfModel.getTransformerMeterRelationDomain().getTransLostNum() != null) {
+										ecfModel.setActiveTransformerLoss(
+												ecfModel.getTransformerMeterRelationDomain().getTransLostNum());
+										ecfModel.setReactiveTransformerLoss(
+												ecfModel.getTransformerMeterRelationDomain().getTransLostNum());
+									}
+
+									break;
+								case FixedParametersConfig.TRANS_SHARE_FLAG_4:// 参与分摊但不计算变损
+
+									ecfModel.setActiveTransformerLoss(BigDecimal.ZERO);
+
+									ecfModel.setReactiveTransformerLoss(BigDecimal.ZERO);
+
+									break;
+								default:
+									break;
+								}
+
+								subActiveTransformerLoss[0] = subActiveTransformerLoss[0]
+										.add(ecfModel.getActiveTransformerLoss());
+								subReactiveTransformerLoss[0] = subReactiveTransformerLoss[0]
+										.add(ecfModel.getReactiveTransformerLoss());
+
+								transformerCalculateModel.addTransformerLossAllocation(ecfModel.getMeterId(),
+										ecfModel.getMeterNo(), ecfModel.getActiveChargePower(),
+										ecfModel.getTransformerLossType(), ecfModel.getActiveTransformerLoss(),
+										ecfModel.getReactiveTransformerLoss());
+
+							});
+
 						}
 
-						subActiveTransformerLoss[0] = subActiveTransformerLoss[0]
-								.add(ecfModel.getActiveTransformerLoss());
-						subReactiveTransformerLoss[0] = subReactiveTransformerLoss[0]
-								.add(ecfModel.getReactiveTransformerLoss());
-
-					});
-					
-					ECFModel p = list.stream().filter(
-							ecfModel -> (ecfModel.getTransformerLossType() == FixedParametersConfig.TRANS_SHARE_FLAG_1
-									|| ecfModel.getTransformerLossType() == FixedParametersConfig.TRANS_SHARE_FLAG_2))
-							.sorted(Comparator.comparing(ECFModel::getMeterId)).findFirst().orElse(null);
-
-					//
-					if (flag[0] && p != null) {
-						// 处理一下
-						if (subActiveTransformerLoss[0]
-								.compareTo(transformerCalculateModel.getActiveTransformerLoss()) != 0) {
-
-							p.setActiveTransformerLoss(p.getActiveTransformerLoss().add(transformerCalculateModel
-									.getActiveTransformerLoss().subtract(subActiveTransformerLoss[0]).abs()));
-
-						}
-
-						if (subReactiveTransformerLoss[0]
-								.compareTo(transformerCalculateModel.getReactiveTransformerLoss()) != 0) {
-							p.setReactiveTransformerLoss(p.getReactiveTransformerLoss().add(transformerCalculateModel
-									.getReactiveTransformerLoss().subtract(subReactiveTransformerLoss[0]).abs()));
-
-						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 
 				});
@@ -229,7 +249,7 @@ public class TransformerLossFilter implements EcfFilter, MongoDAOSupport {
 	 * @param date
 	 * @return
 	 */
-	private Map<BigDecimal, List<TransformerLossTableParamDomain>> getTransformerLossTableParamDomains(String date) {
+	private Map<String, List<TransformerLossTableParamDomain>> getTransformerLossTableParamDomains(String date) {
 		List<TransformerLossTableParamDomain> transformerLossTableParamDomains = findMany(
 				getCollection(date, MongoCollectionConfig.TRANSFORMER_LOSS_TABLE_PARAM_INFO.name()),
 				new MongoFindFilter() {
@@ -240,27 +260,12 @@ public class TransformerLossFilter implements EcfFilter, MongoDAOSupport {
 				}, TransformerLossTableParamDomain.class);
 
 		// 变损参数Map
-		Map<BigDecimal, List<TransformerLossTableParamDomain>> tableMap = transformerLossTableParamDomains
-				.parallelStream().collect(Collectors.groupingBy(TransformerLossTableParamDomain::getCapacity));
+		Map<String, List<TransformerLossTableParamDomain>> tableMap = transformerLossTableParamDomains.parallelStream()
+				.collect(Collectors.groupingBy(t -> {
+					return t.getTransformerType() + "#" + t.getVoltLevelType();
+				}));
 
 		return tableMap;
-	}
-
-	private Map<BigDecimal, TransformerLoadParamDomain> getLoadDomains(String date) {
-
-		List<TransformerLoadParamDomain> transformerLoadDomains = findMany(
-				getCollection(date, MongoCollectionConfig.TRANSFORMER_LOAD_PARAM_INFO.name()), new MongoFindFilter() {
-					@Override
-					public Bson filter() {
-						return new Document();
-					}
-				}, TransformerLoadParamDomain.class);
-
-		Map<BigDecimal, TransformerLoadParamDomain> loadMap = transformerLoadDomains.parallelStream()
-				.collect(Collectors.toMap(TransformerLoadParamDomain::getCapacity, k -> k));
-
-		return loadMap;
-
 	}
 
 	private List<TransformerLossTableParamDomain> getNearTableParam(
