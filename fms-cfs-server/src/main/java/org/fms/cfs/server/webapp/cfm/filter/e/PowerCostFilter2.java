@@ -68,7 +68,7 @@ public class PowerCostFilter2 implements EcfFilter, MongoDAOSupport {
 			Map<Integer, BigDecimal> powerMap = new HashMap<>();
 
 			e.getMeterData().stream().filter(m -> m.isP1()).forEach(m -> {
-				powerMap.put(m.getTimeSeg().intValue(), m.getChargePower());
+				powerMap.put(Integer.parseInt(m.getTimeSeg()), m.getChargePower());
 			});
 
 			// 奇怪的政策：谷电量大于总电量60%的部分，按平的电价收费
@@ -111,7 +111,7 @@ public class PowerCostFilter2 implements EcfFilter, MongoDAOSupport {
 					return;
 				}
 
-				e.getMeterData().stream().filter(m -> m.getTimeSeg().intValue() == timeSeg).forEach(m -> {
+				e.getMeterData().stream().filter(m -> Integer.parseInt(m.getTimeSeg()) == timeSeg).forEach(m -> {
 //					m.computeCharge(price.getPrice(), BigDecimal.ZERO);
 					m.setCharge(CalculationUtils.multiply(power, price.getPrice(), 2));
 				});

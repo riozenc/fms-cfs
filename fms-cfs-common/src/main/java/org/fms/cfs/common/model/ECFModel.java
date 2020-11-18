@@ -599,9 +599,9 @@ public class ECFModel extends CFModel {
 //	  }
 
 	public void initVirtualMeterData(List<CommonParamDomain> timeSegParams) {		
-		timeSegParams.stream().filter(t->isTs? true: t.getParamKey()==0).forEach(t->{
+		timeSegParams.stream().filter(t->isTs? true: "0".equals(t.getParamKey())).forEach(t->{
 			WriteFilesDomain writeFilesDomain = new WriteFilesDomain();
-			writeFilesDomain.setTimeSeg(t.getParamKey().byteValue());
+			writeFilesDomain.setTimeSeg(t.getParamKey());
 			writeFilesDomain.setPowerDirection((byte) 1);
 			writeFilesDomain.setFunctionCode((byte) 1);
 			writeFilesDomain.setPhaseSeq((byte) 4);
@@ -728,15 +728,15 @@ this.activeTransformerLoss = activeTransformerLoss;
 		this.getMeterData().stream().collect(Collectors.groupingBy(m -> m.getPhaseSeq())).forEach((i, list) -> {
 
 			try {
-				BigDecimal readPower = list.stream().filter(m -> m.isP1()).filter(m -> m.getTimeSeg() != 0)
+				BigDecimal readPower = list.stream().filter(m -> m.isP1()).filter(m -> !"0".equals(m.getTimeSeg()))
 						.map(MeterDataModel::getReadPower).reduce(BigDecimal.ZERO, BigDecimal::add);
 				// 覆盖 正向有功总 的抄见电量
 				if (readPower.compareTo(BigDecimal.ZERO) != 0) {
 
-					BigDecimal totalPower = list.stream().filter(m -> m.isP1()).filter(m -> m.getTimeSeg() == 0)
+					BigDecimal totalPower = list.stream().filter(m -> m.isP1()).filter(m -> "0".equals(m.getTimeSeg()))
 							.findFirst().get().getReadPower();
 
-					BigDecimal diffPower = list.stream().filter(m -> m.isP1()).filter(m -> m.getTimeSeg() != 0)
+					BigDecimal diffPower = list.stream().filter(m -> m.isP1()).filter(m -> !"0".equals(m.getTimeSeg()))
 							.map(MeterDataModel::getReadPower).reduce(totalPower, BigDecimal::subtract);
 
 					MeterDataModel pMeterDataModel = list.stream().filter(m -> m.getKey() == P).findFirst().get();
@@ -790,7 +790,7 @@ this.activeTransformerLoss = activeTransformerLoss;
 	public void replaceProtocolPower() {
 
 		BigDecimal protocolPower = this.getMeterData().parallelStream().filter(m -> m.isP1())
-				.filter(m -> m.getTimeSeg() != 0).map(MeterDataModel::getProtocolPower)
+				.filter(m -> !"0".equals(m.getTimeSeg())).map(MeterDataModel::getProtocolPower)
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 		MeterDataModel meterDataModel = this.getMeterData().parallelStream().filter(m -> m.isP1R0()).findFirst()
@@ -818,7 +818,7 @@ this.activeTransformerLoss = activeTransformerLoss;
 	 */
 	public void computeVolumeCharge() {
 		if (isTs()) {
-			this.volumeCharge = getMeterData().stream().filter(m -> m.isP1()).filter(m -> m.getTimeSeg() != 0)
+			this.volumeCharge = getMeterData().stream().filter(m -> m.isP1()).filter(m -> !"0".equals(m.getTimeSeg()))
 					.map(MeterDataModel::getCharge).reduce(BigDecimal.ZERO, BigDecimal::add)
 					.setScale(2, BigDecimal.ROUND_HALF_UP);
 		} else {
@@ -844,7 +844,7 @@ this.activeTransformerLoss = activeTransformerLoss;
 			meterData.computeChargePower();
 		});
 		if (isTs()) {
-			this.activeChargePower = getMeterData().stream().filter(m -> m.isP1()).filter(m -> m.getTimeSeg() != 0)
+			this.activeChargePower = getMeterData().stream().filter(m -> m.isP1()).filter(m -> !"0".equals(m.getTimeSeg()))
 					.map(MeterDataModel::getChargePower).reduce(BigDecimal.ZERO, BigDecimal::add)
 					.setScale(2, BigDecimal.ROUND_HALF_UP);
 			// 桂东无功只有总

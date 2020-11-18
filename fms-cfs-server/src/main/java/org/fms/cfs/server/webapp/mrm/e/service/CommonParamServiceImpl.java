@@ -78,7 +78,7 @@ public class CommonParamServiceImpl implements ICommonParamService {
 		// TODO Auto-generated method stub
 		CommonParamDomain commonParamDomain = new CommonParamDomain();
 		commonParamDomain.setType("CURRENT_MON");
-		commonParamDomain.setParamKey(0);
+		commonParamDomain.setParamKey("0");
 		commonParamDomain.setParamValue(date);
 		return commonParamDAO.nextMon(commonParamDomain);
 	}

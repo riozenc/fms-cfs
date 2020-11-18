@@ -35,7 +35,7 @@ public class WriteFilesDomain implements MybatisEntity {
 	private Byte powerDirection;// 功率方向POWER_DIRECTION;
 	private Byte writeFlag;// 抄表标志 WRITE_FLAG smallint FALSE FALSE FALSE
 	private Byte writeMethod;// 抄表方式 WRITE_METHOD smallint FALSE FALSE FALSE
-	private Byte timeSeg;// 时段 TIME_SEG smallint FALSE FALSE FALSE
+	private String timeSeg;// 时段 TIME_SEG smallint FALSE FALSE FALSE
 	private BigDecimal startNum;// 起码 START_NUM decimal(12,2) 12 2 FALSE FALSE FALSE
 	private BigDecimal endNum;// 止码 END_NUM decimal(12,2) 12 2 FALSE FALSE FALSE
 	private BigDecimal diffNum;// 度差 DIFF_NUM decimal(12,2) 12 2 FALSE FALSE FALSE
@@ -154,11 +154,11 @@ public class WriteFilesDomain implements MybatisEntity {
 		this.writeMethod = writeMethod;
 	}
 
-	public Byte getTimeSeg() {
+	public String getTimeSeg() {
 		return timeSeg;
 	}
 
-	public void setTimeSeg(Byte timeSeg) {
+	public void setTimeSeg(String timeSeg) {
 		this.timeSeg = timeSeg;
 	}
 

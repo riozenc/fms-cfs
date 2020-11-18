@@ -162,8 +162,8 @@ public class MeterRelationFilter2 implements EcfFilter, MongoDAOSupport {
 			BigDecimal denominator = Arrays.asList(rate).stream().map(BigDecimal::new).reduce(BigDecimal.ZERO,
 					BigDecimal::add);
 
-			pModel.getMeterData().stream().filter(m -> m.getTimeSeg() != 0).forEach(m -> {
-				m.addProtocolPower(pModel.getProtocolPower().abs().multiply(new BigDecimal(rate[m.getTimeSeg()]))
+			pModel.getMeterData().stream().filter(m -> !"0".equals(m.getTimeSeg())).forEach(m -> {
+				m.addProtocolPower(pModel.getProtocolPower().abs().multiply(new BigDecimal(rate[Integer.parseInt(m.getTimeSeg())]))
 						.divide(denominator));
 			});
 		}
@@ -206,7 +206,7 @@ public class MeterRelationFilter2 implements EcfFilter, MongoDAOSupport {
 									throw new NullPointerException("子计量点ID=" + sModel.getMeterId() + "对应数据不存在.");
 								}
 
-								if (pMeterData.getTimeSeg() == 0) {// 总
+								if ("0".equals(pMeterData.getTimeSeg())) {// 总
 									protocolAssignment(pMeterData, sMeterData, protocolPower, isProtocol);
 								} else {
 									protocolAssignment(pMeterData, sMeterData,
@@ -232,7 +232,7 @@ public class MeterRelationFilter2 implements EcfFilter, MongoDAOSupport {
 
 					// 总表电量分摊
 					MeterDataModel[] dataModels = getProtocolOrder(pModel.getMeterData().stream().filter(m -> m.isP1())
-							.filter(m -> m.getTimeSeg() != 0).collect(Collectors.toList()));
+							.filter(m -> !"0".equals(m.getTimeSeg())).collect(Collectors.toList()));
 
 					BigDecimal pending = protocolPower;
 

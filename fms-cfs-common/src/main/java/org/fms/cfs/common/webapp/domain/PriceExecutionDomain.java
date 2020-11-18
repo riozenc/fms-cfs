@@ -8,6 +8,7 @@ package org.fms.cfs.common.webapp.domain;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.riozenc.titanTool.annotation.TablePrimaryKey;
@@ -32,6 +33,7 @@ public class PriceExecutionDomain implements MybatisEntity {
 	private Date createDate;// 创建日期 CREATE_DATE datetime FALSE FALSE FALSE
 	private String operator;// 操作人 OPERATOR varchar(32) 32 FALSE FALSE FALSE
 	private Byte status;// 状态 STATUS smallint FALSE FALSE FALSE
+	private List<Long> ids;
 
 	public Long getId() {
 		return id;
@@ -111,5 +113,15 @@ public class PriceExecutionDomain implements MybatisEntity {
 	public String getKeyByTimeSeg() {
 		return this.getPriceTypeId() + "#"  + this.getTimeSeg();
 	}
+
+	public List<Long> getIds() {
+		return ids;
+	}
+
+	public void setIds(List<Long> ids) {
+		this.ids = ids;
+	}
+	
+	
 
 }

@@ -101,15 +101,15 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 								// 根据电能表资产生成抄表记录
 								if (FixedParametersConfig.FUNCTION_CODE_1 == mmr.getFunctionCode()) {// 有功
 									writeFilesList
-											.add(createWriteFilesDomain(date, userDomain, meterDomain, mmr, (byte) 0));// timeSeg
+											.add(createWriteFilesDomain(date, userDomain, meterDomain, mmr, "0"));// timeSeg
 
 //							是否分时表，分时表额外创建4个对象尖、峰、平、谷
 									if (mmr.getTsFlag() != null
 											&& mmr.getTsFlag() == FixedParametersConfig.TS_METER_FLAG_1) {
 
-										timeSegList.stream().filter(t -> t.getParamKey() != 0).forEach(t -> {
+										timeSegList.stream().filter(t -> !"0".equals(t.getParamKey())).forEach(t -> {
 											writeFilesList.add(createWriteFilesDomain(date, userDomain, meterDomain,
-													mmr, t.getParamKey().byteValue()));
+													mmr, t.getParamKey()));
 										});
 
 									}
@@ -120,7 +120,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 											// 判断电能表功能代码和功率方向 | FUNCTION_CODE = 2 代表 无功 | POWER_DIRECTION = 1 代表正向
 											&& (mmr.getFunctionCode() == FixedParametersConfig.FUNCTION_CODE_2)) {
 										writeFilesList.add(
-												createWriteFilesDomain(date, userDomain, meterDomain, mmr, (byte) 0));// 无功
+												createWriteFilesDomain(date, userDomain, meterDomain, mmr, "0"));// 无功
 									}
 								}
 
@@ -175,7 +175,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 	}
 
 	private WriteFilesDomain createWriteFilesDomain(String date, UserDomain userDomain, MeterDomain meterDomain,
-			MeterMpedRelDomain meterMpedRelDomain, byte timeSeg) {
+			MeterMpedRelDomain meterMpedRelDomain, String timeSeg) {
 
 		WriteFilesDomain writeFilesDomain = new WriteFilesDomain();
 		writeFilesDomain.setMeterId(meterDomain.getId());
@@ -292,25 +292,25 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 						.filter(w -> w.getFunctionCode().compareTo(mr.getFunctionCode()) == 0)
 						.filter(w -> w.getPowerDirection().compareTo(mr.getiDirection()) == 0).forEach(w -> {
 							switch (mr.getiDirection() * 100 + mr.getFunctionCode() * 10 + w.getTimeSeg()) {
-							case 110:// 正向有功总
+							case "110":// 正向有功总
 								w.setStartNum(mr.getP1r0() == null ? BigDecimal.ZERO : mr.getP1r0());
 								break;
-							case 111:// 正向有功峰
+							case "111":// 正向有功峰
 								w.setStartNum(mr.getP1r1() == null ? BigDecimal.ZERO : mr.getP1r1());
 								break;
-							case 112:// 正向有功平
+							case "112":// 正向有功平
 								w.setStartNum(mr.getP1r2() == null ? BigDecimal.ZERO : mr.getP1r2());
 								break;
-							case 113:// 正向有功谷
+							case "113":// 正向有功谷
 								w.setStartNum(mr.getP1r3() == null ? BigDecimal.ZERO : mr.getP1r3());
 								break;
-							case 114:// 正向有功尖
+							case "114":// 正向有功尖
 								w.setStartNum(mr.getP1r4() == null ? BigDecimal.ZERO : mr.getP1r4());
 								break;
-							case 120:// 正向无功总
+							case "120":// 正向无功总
 								w.setStartNum(mr.getP3r0() == null ? BigDecimal.ZERO : mr.getP3r0());
 								break;
-							case 220:// 反向无功总
+							case "220":// 反向无功总
 								w.setStartNum(mr.getP4r0() == null ? BigDecimal.ZERO : mr.getP4r0());
 								break;
 

@@ -8,7 +8,7 @@ public class CommonParamDomain implements MybatisEntity {
 	@TablePrimaryKey
 	private Long id;
 	private String type;
-	private Integer paramKey;
+	private String paramKey;
 	private String paramValue;
 	private String remark;
 	private Byte status;
@@ -29,11 +29,11 @@ public class CommonParamDomain implements MybatisEntity {
 		this.type = type;
 	}
 
-	public Integer getParamKey() {
+	public String getParamKey() {
 		return paramKey;
 	}
 
-	public void setParamKey(Integer paramKey) {
+	public void setParamKey(String paramKey) {
 		this.paramKey = paramKey;
 	}
 

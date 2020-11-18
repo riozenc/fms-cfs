@@ -17,7 +17,7 @@ import org.fms.cfs.common.webapp.domain.WriteFilesDomain;
 public class MeterDataModel extends CFModel {
 
 	private int key;
-	private Byte timeSeg;// 标识 （总、尖、峰、平、谷、正无、反无）
+	private String timeSeg;// 标识 （总、尖、峰、平、谷、正无、反无）
 	private Byte functionCode;// 功能代码 (有功、无功)
 	private Byte powerDirection;// 功率方向(正向、反向)
 	private Byte phaseSeq;// 相序
@@ -63,11 +63,11 @@ public class MeterDataModel extends CFModel {
 		this.isProtocol = isProtocol;
 	}
 
-	public Byte getTimeSeg() {
+	public String getTimeSeg() {
 		return timeSeg;
 	}
 
-	public void setTimeSeg(Byte timeSeg) {
+	public void setTimeSeg(String timeSeg) {
 		this.timeSeg = timeSeg;
 	}
 
@@ -269,7 +269,7 @@ public class MeterDataModel extends CFModel {
 	 * @return
 	 */
 	public boolean isP1R0() {
-		return this.timeSeg == 0 && powerDirection == 1 && functionCode == 1;
+		return "0".equals(this.timeSeg) && powerDirection == 1 && functionCode == 1;
 	}
 
 	/**
@@ -278,7 +278,7 @@ public class MeterDataModel extends CFModel {
 	 * @return
 	 */
 	public boolean isP3R0() {
-		return this.timeSeg == 0 && powerDirection == 1 && functionCode == 2;
+		return "0".equals(this.timeSeg) && powerDirection == 1 && functionCode == 2;
 	}
 
 	/**
@@ -302,17 +302,17 @@ public class MeterDataModel extends CFModel {
 	// 根据规则生成key 由阶梯、功率方向、功能代码、时段
 	public void createKey() {
 //		this.key = getLadder() * 1000 + getPowerDirection() * 100 + getFunctionCode() * 10 + getTimeSeg();
-		this.key = getPowerDirection() * 100 + getFunctionCode() * 10 + getTimeSeg();
+		this.key = getPowerDirection() * 100 + getFunctionCode() * 10 + Integer.parseInt(getTimeSeg());
 	}
 
 	public int getComputeKey() {
-		return getPowerDirection() * 100 + getFunctionCode() * 10 + getTimeSeg();
+		return getPowerDirection() * 100 + getFunctionCode() * 10 + Integer.parseInt(getTimeSeg());
 	}
 
 	public void setComputeKey(int computeKey) {
 		this.setPowerDirection((byte) (computeKey / 100));
 		this.setFunctionCode((byte) (computeKey / 10 % 10));
-		this.setTimeSeg((byte) (computeKey % 10));
+		this.setTimeSeg(String.valueOf((computeKey % 10)));
 	}
 
 	public BigDecimal computeDiffNum(ECFModel ecfModel) {
