@@ -253,7 +253,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 					@Override
 					public Bson filter() {
 						return Filters.in("mpedId",
-								writeFilesList.stream().map(WriteFilesDomain::getMeterId).collect(Collectors.toList()));
+								writeFilesList.stream().map(WriteFilesDomain::getMpedId).collect(Collectors.toList()));
 					}
 				}, SDevIrDomain.class).stream().collect(Collectors.groupingBy(SDevIrDomain::getMpedId));
 
