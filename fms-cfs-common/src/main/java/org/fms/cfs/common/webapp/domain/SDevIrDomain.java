@@ -22,7 +22,7 @@ public class SDevIrDomain implements MybatisEntity {
 	public Long mpedId; // 测量点标识
 	public Byte equipTypeCode; // 设备类别
 	public Long equipId; // 设备标识
-	private Byte typeCode; // 装拆类别
+	private String typeCode; // 装拆类别
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	private Date irDate; // 装拆日期
 	private String empNo; // 装拆人员
@@ -144,11 +144,11 @@ public class SDevIrDomain implements MybatisEntity {
 		this.equipId = equipId;
 	}
 
-	public Byte getTypeCode() {
+	public String getTypeCode() {
 		return typeCode;
 	}
 
-	public void setTypeCode(Byte typeCode) {
+	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
 	}
 

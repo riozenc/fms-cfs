@@ -273,7 +273,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 				} else {
 					return mr.getIrDate().after(minDate);
 				}
-			}).filter(mr -> mr.getTypeCode() == FixedParametersConfig.OPERATE_TYPE_INSTALL)
+			}).filter(mr -> FixedParametersConfig.OPERATE_TYPE_INSTALL.equals(mr.getTypeCode()))
 					.sorted(Comparator.comparing(SDevIrDomain::getCreateDate)).collect(Collectors.toMap(mr -> {
 						return mr.getiDirection() + "#" + mr.getFunctionCode();
 					}, k -> k, (k, v) -> {
@@ -326,7 +326,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 
 			// OPERATE_TYPE = 2 拆表。只有拆表的时候才有换表电量
 			Map<String, List<SDevIrDomain>> dismantleStream = list.stream()
-					.filter(mr -> mr.getTypeCode() == FixedParametersConfig.OPERATE_TYPE_DISMANTLE)
+					.filter(mr -> FixedParametersConfig.OPERATE_TYPE_DISMANTLE.equals(mr.getTypeCode()))
 					.filter(mr -> mr.getEquipTypeCode() == FixedParametersConfig.EQUIPMENT_TYPE_1)
 					.collect(Collectors.groupingBy(mr -> {
 						return mr.getiDirection() + "#" + mr.getFunctionCode();
