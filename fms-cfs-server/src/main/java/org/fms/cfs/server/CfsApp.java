@@ -13,9 +13,9 @@ import com.riozenc.titanTool.mongo.MongoPoolFactory;
  */
 @EnableEurekaClient
 @SpringBootApplication(scanBasePackages = "org.fms.cfs", exclude = MongoAutoConfiguration.class)
-public class App {
+public class CfsApp {
 	public static void main(String[] args) {
-		SpringApplication.run(App.class, args);
+		SpringApplication.run(CfsApp.class, args);
 		MongoPoolFactory.init();
 
 	}

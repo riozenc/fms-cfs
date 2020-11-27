@@ -100,8 +100,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 							if (userDomain != null) {
 								// 根据电能表资产生成抄表记录
 								if (FixedParametersConfig.FUNCTION_CODE_1 == mmr.getFunctionCode()) {// 有功
-									writeFilesList
-											.add(createWriteFilesDomain(date, userDomain, meterDomain, mmr, "0"));// timeSeg
+									writeFilesList.add(createWriteFilesDomain(date, userDomain, meterDomain, mmr, "0"));// timeSeg
 
 //							是否分时表，分时表额外创建4个对象尖、峰、平、谷
 									if (mmr.getTsFlag() != null
@@ -119,8 +118,8 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 									if (billingDataInitModel.getSn() == meterDomain.getCountTimes()
 											// 判断电能表功能代码和功率方向 | FUNCTION_CODE = 2 代表 无功 | POWER_DIRECTION = 1 代表正向
 											&& (mmr.getFunctionCode() == FixedParametersConfig.FUNCTION_CODE_2)) {
-										writeFilesList.add(
-												createWriteFilesDomain(date, userDomain, meterDomain, mmr, "0"));// 无功
+										writeFilesList
+												.add(createWriteFilesDomain(date, userDomain, meterDomain, mmr, "0"));// 无功
 									}
 								}
 
@@ -258,7 +257,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 				}, SDevIrDomain.class).stream().collect(Collectors.groupingBy(SDevIrDomain::getMpedId));
 
 		Map<Long, List<WriteFilesDomain>> writeFilesMap = writeFilesList.stream()
-				.collect(Collectors.groupingBy(WriteFilesDomain::getMeterId));
+				.collect(Collectors.groupingBy(WriteFilesDomain::getMpedId));
 
 		sDevIrMap.forEach((mpedId, list) -> {// list 获取最新的换表记录
 
@@ -287,11 +286,13 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 
 			installMap.values().forEach(mr -> {
 				// 电能表
-				writeFilesDomains.stream()
-						.filter(w -> w.getMpedId().compareTo(mr.getMpedId()) == 0)
+				writeFilesDomains.stream().filter(w -> w.getMpedId().compareTo(mr.getMpedId()) == 0)
 						.filter(w -> w.getFunctionCode().compareTo(mr.getFunctionCode()) == 0)
 						.filter(w -> w.getPowerDirection().compareTo(mr.getiDirection()) == 0).forEach(w -> {
-							switch (mr.getiDirection() * 100 + mr.getFunctionCode() * 10 + w.getTimeSeg()) {
+
+//							switch (mr.getiDirection() * 100 + mr.getFunctionCode() * 10 + w.getTimeSeg()) {
+							switch (mr.getiDirection() + "" + mr.getFunctionCode() + w.getTimeSeg()) {
+
 							case "110":// 正向有功总
 								w.setStartNum(mr.getP1r0() == null ? BigDecimal.ZERO : mr.getP1r0());
 								break;
