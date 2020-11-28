@@ -11,11 +11,11 @@ public class FixedParametersConfig {
 	/**
 	 * 装表
 	 */
-	public static final int OPERATE_TYPE_INSTALL = 0;
+	public static final String OPERATE_TYPE_INSTALL = "01";
 	/**
 	 * 拆表
 	 */
-	public static final int OPERATE_TYPE_DISMANTLE = 1;
+	public static final String OPERATE_TYPE_DISMANTLE = "02";
 
 	public static final int EQUIPMENT_TYPE_1 = 1;
 	public static final int EQUIPMENT_TYPE_2 = 2;
