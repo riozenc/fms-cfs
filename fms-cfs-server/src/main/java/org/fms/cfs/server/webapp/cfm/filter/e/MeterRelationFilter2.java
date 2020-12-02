@@ -7,6 +7,7 @@
 package org.fms.cfs.server.webapp.cfm.filter.e;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -210,7 +211,8 @@ public class MeterRelationFilter2 implements EcfFilter, MongoDAOSupport {
 									protocolAssignment(pMeterData, sMeterData, protocolPower, isProtocol);
 								} else {
 									protocolAssignment(pMeterData, sMeterData,
-											protocolPower.multiply(pMeterData.getActiveEnergy().divide(totalPower, 2)),
+											protocolPower
+											.multiply(pMeterData.getActiveEnergy().divide(totalPower, 4,RoundingMode.HALF_UP)),
 											isProtocol);
 								}
 

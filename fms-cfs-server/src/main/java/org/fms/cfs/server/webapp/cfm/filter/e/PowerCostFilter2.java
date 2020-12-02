@@ -70,7 +70,6 @@ public class PowerCostFilter2 implements EcfFilter, MongoDAOSupport {
 			e.getMeterData().stream().filter(m -> m.isP1()).forEach(m -> {
 				powerMap.put(Integer.parseInt(m.getTimeSeg()), m.getChargePower());
 			});
-			System.out.println(e.getMeterData());
 
 			// 奇怪的政策：谷电量大于总电量60%的部分，按平的电价收费
 			if (e.isTs()) {
