@@ -45,6 +45,8 @@ public class WritePowerFilter implements EcfFilter, MongoDAOSupport {
 
 		// 初始化
 		meterReading(exchange);// 读取抄表数据
+		
+		
 
 		Collection<ECFModel> ecfModels = exchange.getModels().values();
 

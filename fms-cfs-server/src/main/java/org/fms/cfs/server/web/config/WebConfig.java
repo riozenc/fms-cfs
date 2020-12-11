@@ -21,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 import com.riozenc.titanTool.spring.context.SpringContextHolder;
 import com.riozenc.titanTool.spring.http.converter.MessageConverter;
 import com.riozenc.titanTool.spring.web.client.TitanTemplate;
