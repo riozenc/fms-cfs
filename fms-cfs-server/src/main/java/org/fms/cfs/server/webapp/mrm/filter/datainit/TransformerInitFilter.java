@@ -6,15 +6,21 @@
 **/
 package org.fms.cfs.server.webapp.mrm.filter.datainit;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.fms.cfs.common.config.MongoCollectionConfig;
 import org.fms.cfs.common.model.BillingDataInitModel;
 import org.fms.cfs.common.model.exchange.InitModelExchange;
+import org.fms.cfs.common.webapp.domain.CommonParamDomain;
+import org.fms.cfs.common.webapp.domain.TransformerDomain;
 import org.fms.cfs.common.webapp.domain.TransformerLossFormulaParamDomain;
 import org.fms.cfs.common.webapp.domain.TransformerLossTableParamDomain;
+import org.fms.cfs.common.webapp.domain.UserDomain;
 import org.fms.cfs.server.webapp.mrm.filter.BillingDataInitFilter;
 import org.fms.cfs.server.webapp.mrm.filter.InitFilterChain;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +29,8 @@ import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.WriteModel;
 import com.riozenc.titanTool.mongo.dao.MongoDAOSupport;
+import com.riozenc.titanTool.mongo.dao.MongoDAOSupport.MongoUpdateFilter;
+import com.riozenc.titanTool.mongo.dao.MongoDAOSupport.ToDocumentCallBack;
 import com.riozenc.titanTool.spring.web.client.TitanTemplate;
 
 import reactor.core.publisher.Mono;
@@ -47,11 +55,29 @@ public class TransformerInitFilter implements BillingDataInitFilter, MongoDAOSup
 	public Mono<Void> filter(InitModelExchange exchange, InitFilterChain filterChain) {
 		BillingDataInitModel billingDataInitModel = (BillingDataInitModel) exchange.getModel();
 
+		Map<String, CommonParamDomain> commonParamMap = findMany(
+				getCollection(billingDataInitModel.getDate(), MongoCollectionConfig.SYSTEM_COMMON.name()),
+				new MongoFindFilter() {
+
+					@Override
+					public Bson filter() {
+						return Filters.eq("type", "RATED_CAPACITY");
+					}
+				}, CommonParamDomain.class).stream().collect(Collectors.toMap(CommonParamDomain::getParamKey, k -> k));
+
 		List<WriteModel<Document>> transformerMongoList = updateMany(
-				toDocuments(billingDataInitModel.getTransformerDomains()), new MongoUpdateFilter() {
+				toDocuments(billingDataInitModel.getTransformerDomains(), new ToDocumentCallBack<TransformerDomain>() {
+					@Override
+					public TransformerDomain call(TransformerDomain transformerDomain) {
+
+						transformerDomain.setCapacity(new BigDecimal(
+								commonParamMap.get(transformerDomain.getRatedCapacity()).getParamValue()));
+
+						return transformerDomain;
+					}
+				}), new MongoUpdateFilter() {
 					@Override
 					public Bson filter(Document param) {
-						// TODO Auto-generated method stub
 						return Filters.eq("id", param.get("id"));
 					}
 				}, true);

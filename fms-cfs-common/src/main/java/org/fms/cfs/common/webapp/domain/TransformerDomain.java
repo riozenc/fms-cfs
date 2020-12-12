@@ -28,7 +28,8 @@ public class TransformerDomain extends Page implements MybatisEntity {
 	private Long transformerAssetsId; // 变压器资产ID
 	private String transformerNo; // 变压器编号
 	private String deskName; // 变压器名称
-	private BigDecimal capacity = BigDecimal.ZERO; // 变压器容量
+	private String ratedCapacity;
+	private BigDecimal capacity = BigDecimal.ZERO;// 变压器容量
 	private String transformerGroupNo; // 变压器组号
 	private Byte isPubType; // 公用变标志
 	private Byte transformerLossType; // 变损计算方法
@@ -56,7 +57,7 @@ public class TransformerDomain extends Page implements MybatisEntity {
 	private Byte status; // 状态
 	private Long operator;// 操作人ID ID bigint TRUE FALSE TRUE
 	private Long lineId;// 线路ID ID bigint TRUE FALSE TRUE
-  
+
 	private String address; // 地理位置
 	private Long consId; // 所属用户
 	private Long tgId; // 所属台区
@@ -97,6 +98,14 @@ public class TransformerDomain extends Page implements MybatisEntity {
 
 	public void setDeskName(String deskName) {
 		this.deskName = deskName;
+	}
+
+	public String getRatedCapacity() {
+		return ratedCapacity;
+	}
+
+	public void setRatedCapacity(String ratedCapacity) {
+		this.ratedCapacity = ratedCapacity;
 	}
 
 	public BigDecimal getCapacity() {
@@ -378,5 +387,5 @@ public class TransformerDomain extends Page implements MybatisEntity {
 	public void setLastModifierTime(String lastModifierTime) {
 		this.lastModifierTime = lastModifierTime;
 	}
-    
+
 }
