@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.fms.cfs.common.config.FixedParametersConfig;
 import org.fms.cfs.common.config.MongoCollectionConfig;
 import org.fms.cfs.common.model.ECFModel;
 import org.fms.cfs.common.model.exchange.CFModelExchange;
@@ -72,7 +73,7 @@ public class PowerRateFilter implements EcfFilter, MongoDAOSupport {
 		}, v -> v));
 
 		// 过滤掉不执行力调的计量点
-		ecfModelMap.values().parallelStream().filter(e -> e.getCosType() != null && e.getCosType() != 4).forEach(e -> {
+		ecfModelMap.values().parallelStream().filter(e -> e.getCosType() != null && e.getCosType() != FixedParametersConfig.COS_STD_CODE_0).forEach(e -> {
 
 			// sqrt（有功电量*有功电量+无功电量*无功电量）
 

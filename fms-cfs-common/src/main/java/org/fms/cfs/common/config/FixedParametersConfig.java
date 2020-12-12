@@ -106,4 +106,21 @@ public class FixedParametersConfig {
 	 * 分时：尖
 	 */
 	public static final int TIME_SEG_4 = 4;
+	/**
+	 * 不执行力率
+	 */
+	public static final int COS_STD_CODE_0 = 0;
+	
+	/**
+	 * 90奖罚
+	 */
+	public static final int COS_STD_CODE_1 = 1;
+	/**
+	 * 85奖罚
+	 */
+	public static final int COS_STD_CODE_2 = 2;
+	/**
+	 * 80奖罚
+	 */
+	public static final int COS_STD_CODE_3 = 3;
 }
