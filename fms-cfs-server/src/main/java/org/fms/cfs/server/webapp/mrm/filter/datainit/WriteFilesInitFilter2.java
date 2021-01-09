@@ -202,6 +202,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 		writeFilesDomain.setUserNo(userDomain.getUserNo());
 		writeFilesDomain.setUserName(userDomain.getUserName());
 		writeFilesDomain.setAddress(userDomain.getAddress());
+		writeFilesDomain.setMeterName(meterDomain.getMeterName());
 
 		writeFilesDomain.createObjectId();
 		return writeFilesDomain;
