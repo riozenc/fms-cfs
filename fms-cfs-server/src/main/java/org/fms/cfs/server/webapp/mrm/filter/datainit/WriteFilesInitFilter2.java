@@ -224,7 +224,7 @@ public class WriteFilesInitFilter2 implements BillingDataInitFilter, MongoDAOSup
 		writeFilesList.forEach(w -> {
 			WriteFilesDomain last = lastWriteFilesDomains.get(w.get_id());
 
-			if (last == null || last.getStartNum() == null) {
+			if (last == null || last.getEndNum() == null) {
 				w.setStartNum(BigDecimal.ZERO);
 			} else {
 				w.setStartNum(last.getEndNum());
