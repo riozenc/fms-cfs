@@ -40,6 +40,11 @@ public class MeterDataModel extends CFModel {
 	private List<MeterDataModel> threeInOne = Collections.synchronizedList(new ArrayList<>(2));// 针对老现场的特殊情况：3个单相表当作一个三相表用
 
 	private boolean isProtocol = true;// 判断电量是协议来的还是自己用的，以便于正确处理套扣电量
+	
+	private String meterNo;//计量点号
+	private Byte meterOrder;// 序号
+	private Byte writeSn;//抄表序号
+	private String MeterAssetsNo;//电能表号
 
 	public MeterDataModel(WriteFilesDomain writeFilesDomain) {
 		this.setLadder(0);
@@ -52,8 +57,61 @@ public class MeterDataModel extends CFModel {
 		this.setAddPower(writeFilesDomain.getAddPower());// 增减电量
 		this.setChangePower(writeFilesDomain.getChgPower());// 换表电量
 		this.setFactorNum(writeFilesDomain.getFactorNum() == null ? factorNum : writeFilesDomain.getFactorNum());
+		this.setWriteSn(writeFilesDomain.getSn());
+		this.setMeterOrder(writeFilesDomain.getMeterOrder());
+		this.setMeterNo(writeFilesDomain.getMeterNo());
 		this.createKey();
 	}
+
+	
+	
+	public String getMeterAssetsNo() {
+		return MeterAssetsNo;
+	}
+
+
+
+	public void setMeterAssetsNo(String meterAssetsNo) {
+		MeterAssetsNo = meterAssetsNo;
+	}
+
+
+
+	public String getMeterNo() {
+		return meterNo;
+	}
+
+
+
+	public void setMeterNo(String meterNo) {
+		this.meterNo = meterNo;
+	}
+
+
+
+	public Byte getMeterOrder() {
+		return meterOrder;
+	}
+
+
+
+	public void setMeterOrder(Byte meterOrder) {
+		this.meterOrder = meterOrder;
+	}
+
+
+
+	public Byte getWriteSn() {
+		return writeSn;
+	}
+
+
+
+	public void setWriteSn(Byte writeSn) {
+		this.writeSn = writeSn;
+	}
+
+
 
 	public boolean isProtocol() {
 		return isProtocol;
