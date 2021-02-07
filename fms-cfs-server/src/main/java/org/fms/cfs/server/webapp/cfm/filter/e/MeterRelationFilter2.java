@@ -86,17 +86,13 @@ public class MeterRelationFilter2 implements EcfFilter, MongoDAOSupport {
 		}
 
 		// 过滤掉数据不全的计量点（包括关系值及抄表数据）
-		if (sModel.getMeterData().isEmpty() || meterRelationGraphDomain.getMeterRateFlag() == null) {
+		if (sModel.getMeterData().isEmpty() ) {
 			sModel.addRemark("计量点套扣关系值为空，可能该计量点未进行抄表初始化，请检查。");
 			sModel.markProcessResult(getOrder(), false);
 			return;
 		}
 
-		if (meterRelationGraphDomain.getpMeterRateFlag() == null) {
-			pModel.addRemark("计量点套扣关系值为空，可能该计量点未进行抄表初始化，请检查。");
-			pModel.markProcessResult(getOrder(), false);
-			return;
-		}
+		
 		// 2、进行拆分。情况有3*3种：
 		// （1）3:定量、定比、总分
 		// （2）3:相同类型电能表、分时-普通、普通-分时

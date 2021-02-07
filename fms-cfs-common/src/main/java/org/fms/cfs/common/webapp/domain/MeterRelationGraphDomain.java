@@ -20,8 +20,8 @@ public class MeterRelationGraphDomain {
 	private Long id;//
 	private Long meterId;//
 	private Long pMeterId;//
-	private Byte meterRateFlag;// 计量点表计类型 METER_RATE_FLAG smallint FALSE FALSE FALSE
-	private Byte pMeterRateFlag;// 关系计量点表计类型 P_METER_RATE_FLAG smallint FALSE FALSE FALSE
+//	private Byte meterRateFlag;// 计量点表计类型 METER_RATE_FLAG smallint FALSE FALSE FALSE
+//	private Byte pMeterRateFlag;// 关系计量点表计类型 P_METER_RATE_FLAG smallint FALSE FALSE FALSE
 	private String shareRate;// 分摊比例（普通拆分时）
 	private Byte meterRelationType;// 计量点关系 METER_RELATION_TYPE smallint FALSE FALSE FALSE
 	private BigDecimal meterRelationValue=BigDecimal.ZERO;// 关系值 METER_RELATION_VALUE decimal(5,2) 5 2 FALSE FALSE FALSE
@@ -62,21 +62,21 @@ public class MeterRelationGraphDomain {
 		this.rel = rel;
 	}
 
-	public Byte getMeterRateFlag() {
-		return meterRateFlag;
-	}
-
-	public void setMeterRateFlag(Byte meterRateFlag) {
-		this.meterRateFlag = meterRateFlag;
-	}
-
-	public Byte getpMeterRateFlag() {
-		return pMeterRateFlag;
-	}
-
-	public void setpMeterRateFlag(Byte pMeterRateFlag) {
-		this.pMeterRateFlag = pMeterRateFlag;
-	}
+//	public Byte getMeterRateFlag() {
+//		return meterRateFlag;
+//	}
+//
+//	public void setMeterRateFlag(Byte meterRateFlag) {
+//		this.meterRateFlag = meterRateFlag;
+//	}
+//
+//	public Byte getpMeterRateFlag() {
+//		return pMeterRateFlag;
+//	}
+//
+//	public void setpMeterRateFlag(Byte pMeterRateFlag) {
+//		this.pMeterRateFlag = pMeterRateFlag;
+//	}
 
 	public Byte getMeterRelationType() {
 		return meterRelationType;
