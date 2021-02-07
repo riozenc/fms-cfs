@@ -22,6 +22,7 @@ import org.fms.cfs.server.webapp.mrm.filter.InitFilterChain;
 import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.WriteModel;
+import com.riozenc.titanTool.common.json.utils.JSONUtil;
 import com.riozenc.titanTool.mongo.dao.MongoDAOSupport;
 
 import reactor.core.publisher.Mono;
@@ -48,11 +49,15 @@ public class BemChangeInitFilter implements BillingDataInitFilter, MongoDAOSuppo
 					}
 				});
 
-		if(billingDataInitModel.getsDevIrDomains()==null) {
+		if (billingDataInitModel.getsDevIrDomains() == null) {
 			billingDataInitModel.addExecuteResult("换表记录数据为0,请检查.");
 			return filterChain.filter(exchange);
 		}
-		
+
+		if (billingDataInitModel.getsDevIrDomains().stream().noneMatch(sdi -> sdi == null)) {
+			throw new RuntimeException("该批数据中,存在没有换表记录的数据,请检查是否都已安装电能表.");
+		}
+
 		// 换表记录
 		List<WriteModel<Document>> updateResult = updateMany(
 				toDocuments(billingDataInitModel.getsDevIrDomains(), new ToDocumentCallBack<SDevIrDomain>() {
@@ -75,8 +80,9 @@ public class BemChangeInitFilter implements BillingDataInitFilter, MongoDAOSuppo
 			return filterChain.filter(exchange);
 		}
 
-		BulkWriteResult bulkWriteResult = getCollection(getCollectionName(billingDataInitModel.getDate(),
-				MongoCollectionConfig.S_DEV_IR.name())).bulkWrite(updateResult);
+		BulkWriteResult bulkWriteResult = getCollection(
+				getCollectionName(billingDataInitModel.getDate(), MongoCollectionConfig.S_DEV_IR.name()))
+						.bulkWrite(updateResult);
 		billingDataInitModel.addExecuteResult("换表记录：" + (updateResult.size() - bulkWriteResult.getModifiedCount()));
 		return filterChain.filter(exchange);
 	}

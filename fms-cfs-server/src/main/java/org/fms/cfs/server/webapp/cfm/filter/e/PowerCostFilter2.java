@@ -71,15 +71,9 @@ public class PowerCostFilter2 implements EcfFilter, MongoDAOSupport {
 				powerMap.put(Integer.parseInt(m.getTimeSeg()), m.getChargePower());
 			});
 
-			// 奇怪的政策：谷电量大于总电量60%的部分，按平的电价收费
-			if (e.isTs()) {
-				BigDecimal tempPower = powerMap.get(FixedParametersConfig.TIME_SEG_0).multiply(BigDecimal.valueOf(0.6))
-						.setScale(BigDecimal.ROUND_HALF_UP, 2);
-				if (powerMap.get(FixedParametersConfig.TIME_SEG_3).compareTo(tempPower) >= 0) {
-					powerMap.put(FixedParametersConfig.TIME_SEG_2, powerMap.get(FixedParametersConfig.TIME_SEG_2)
-							.add(powerMap.get(FixedParametersConfig.TIME_SEG_3).subtract(tempPower)));
-					powerMap.put(FixedParametersConfig.TIME_SEG_3, tempPower);
-				}
+			if (powerMap.isEmpty()) {
+				e.markProcessResult(this.getOrder(), false);
+				e.addRemark("计量点编号:" + e.getMeterNo() + " 没有正向有功总电量,请检查数据.");
 			}
 
 			powerMap.forEach((timeSeg, power) -> {

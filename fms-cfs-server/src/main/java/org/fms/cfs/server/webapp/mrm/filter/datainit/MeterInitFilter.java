@@ -12,10 +12,13 @@ import java.util.stream.Collectors;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.fms.cfs.common.config.FixedParametersConfig;
 import org.fms.cfs.common.config.MongoCollectionConfig;
 import org.fms.cfs.common.model.BillingDataInitModel;
 import org.fms.cfs.common.model.exchange.InitModelExchange;
+import org.fms.cfs.common.utils.CollectionOperationUtils;
 import org.fms.cfs.common.webapp.domain.MeterDomain;
+import org.fms.cfs.common.webapp.domain.MeterMpedRelDomain;
 import org.fms.cfs.common.webapp.domain.UserDomain;
 import org.fms.cfs.common.webapp.domain.WriteSectDomain;
 import org.fms.cfs.server.webapp.mrm.filter.BillingDataInitFilter;
@@ -49,6 +52,30 @@ public class MeterInitFilter implements BillingDataInitFilter, MongoDAOSupport {
 			billingDataInitModel.addExecuteResult("电计量点数据为0,请检查电计量点档案.");
 			return filterChain.filter(exchange);
 		}
+
+		List<Long> meterIds = billingDataInitModel.getMeterDomains().stream().map(MeterDomain::getId)
+				.collect(Collectors.toList());
+
+		// 删除已经发行的计量点
+		List<Long> invalidMeterIds = findMany(
+				getCollectionName(billingDataInitModel.getDate(), MongoCollectionConfig.ELECTRIC_METER.name()),
+				new MongoFindFilter() {
+					@Override
+					public Bson filter() {
+						return Filters.and(Filters.in("id", meterIds), Filters.eq("status", MeterDomain.ISSUED));
+					}
+				}, MeterDomain.class).stream().map(MeterDomain::getId).collect(Collectors.toList());
+
+		// 重新赋值meterList和meterMeterAssetsRel
+		billingDataInitModel.setMeterDomains(
+				(List<MeterDomain>) CollectionOperationUtils.intersection(billingDataInitModel.getMeterDomains(), a -> {
+					return !invalidMeterIds.contains(a.getId());
+				}));
+
+		billingDataInitModel.setMeterMpedRelDomains((List<MeterMpedRelDomain>) CollectionOperationUtils
+				.intersection(billingDataInitModel.getMeterMpedRelDomains(), a -> {
+					return !invalidMeterIds.contains(a.getMeterId());
+				}));
 
 		Map<Long, UserDomain> userMap = billingDataInitModel.getUserDomains().parallelStream()
 				.collect(Collectors.toMap(UserDomain::getId, k -> k));
